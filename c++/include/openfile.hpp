@@ -1,5 +1,7 @@
 #include <iostream>
+#include <fstream>
 #include <string>
+#include <list>
 #include <stdio.h>
 
 using namespace std;
@@ -9,11 +11,29 @@ using namespace std;
 
 class Rule {
 	private:
+		static unsigned _number_of_rule;
 		unsigned _ruleNumber;
 		string _ruleBitString;
+	public:
+		Rule(unsigned ruleNumber, string ruleBitString) {
+			++_number_of_rule;
+			_ruleNumber = ruleNumber;
+			_ruleBitString = ruleBitString;
+		}
+		~Rule() {
+		//	printf("call the Rule deconstructor.\n");
+		}
+		unsigned getRuleNumber() {
+			return _ruleNumber;
+		}
+		string getRuleBitString() {
+			return _ruleBitString;
+		}
 };
 
 
 
+void readPackets(char*&, list<string> *) throw (string);
+void readRulelist(char*&, list<Rule> *) throw (string);
 
 #endif
