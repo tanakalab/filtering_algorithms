@@ -37,9 +37,9 @@ class RBT {
 		char _nodeBit;
 		string _nodeString;
 		unsigned _trieNumber;
+		unsigned _dIndex;        /* an index for a Decision Tree Search */
 		RBT* _left;
 		RBT* _right;
-		RBT* _dIndex;        /* an index for a Decision Tree Search */
 		list<Run>* _runlist;
 	public:
 		RBT() { }
@@ -47,6 +47,7 @@ class RBT {
 			_nodeBit = nodeBit;
 			_nodeString = nodeString;
 			_trieNumber = trieNumber;
+			_dIndex = 0;
 			_left = NULL;
 			_right = NULL;
 			_runlist = NULL;
@@ -56,6 +57,15 @@ class RBT {
 		char getNodeBit() { return _nodeBit; }
 		string getNodeString() { return _nodeString; }
 		unsigned getTrieNumber() { return _trieNumber; }
+		RBT* getLeft() { return _left; }
+		RBT* getRight() { return _right; }
+		list<Run>* getRun() { return _runlist; }
+		void setLeft(RBT* left) { _left = left; }
+		void setRight(RBT* right) { _right = right; }
+		void setRun(Run r) {
+			if (NULL == _runlist) { _runlist = new list<Run>; }
+			_runlist->push_back(r);
+		}
 };
 
 /* for constructing a Run-Based Trie */
@@ -74,9 +84,10 @@ class RunPair {
 		Run getRun() { return _run; }
 };
 
-void traverseAndMakeRBTNode(RBT, Run);
+void traverseAndMakeRBTNode(RBT*, Run);
 list<RunPair>* cutOutRun(Rule);
 void createTheRBTRootNodes(vector<RBT>*, unsigned);
 void makeRunBasedTrie(list<Rule>*&, vector<RBT> *);
+void postTraverse(RBT*);
 
 #endif

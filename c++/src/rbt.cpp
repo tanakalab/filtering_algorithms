@@ -2,13 +2,33 @@
 
 #include <rbt.hpp>
 
-void traverseAndMakeRBTNode(RBT rbt, Run run)
+void traverseAndMakeRBTNode(RBT *rbt, Run run)
 {
-	printf("%d ", rbt.getTrieNumber());
-	cout << run.getBitString() << ' ';
-	if (run.isTerminal())
-	 putchar('t');
-	putchar('\n');	
+	string bitString = run.getBitString();
+	unsigned l = bitString.length();
+	unsigned tn = rbt->getTrieNumber();
+	unsigned i = 0;
+	RBT* ptr = rbt;
+
+	while (i < l) {
+		if (bitString[i] == '0') {
+			if (NULL == ptr->getLeft()) {
+				RBT* lptr = new RBT('0', tn, bitString.substr(0,i+1));
+				ptr->setLeft(lptr);
+			}
+			ptr = ptr->getLeft();
+		}
+		else {
+			if (NULL == ptr->getRight()) {
+				RBT* rptr = new RBT('1', tn, bitString.substr(0,i+1));
+				ptr->setRight(rptr);
+			}
+			ptr = ptr->getRight();
+		}
+		++i;
+	}
+
+	ptr->setRun(run);
 }
 
 list<RunPair>* cutOutRun(Rule rule)
@@ -77,11 +97,30 @@ void makeRunBasedTrie(list<Rule>*& rulelist, vector<RBT> *rbt)
 		rpPtr = cutOutRun(*ruleIt);
 		rpIt = rpPtr->begin(), rpItEnd = rpPtr->end();
 		while (rpIt != rpItEnd) {
-			traverseAndMakeRBTNode((*rbt)[rpIt->getStartBit()], rpIt->getRun());
+			traverseAndMakeRBTNode(&(*rbt)[rpIt->getStartBit()], rpIt->getRun());
 			//cout << '(' << rpIt->getRun().getBitString() << ',' << rpIt->getStartBit() << ')' << ' ';
 			++rpIt;
 		}
 		//cout << "\n=== " << ruleIt->getRuleNumber() << " ===\n";
 		++ruleIt;
+	}
+}
+
+void postTraverse(RBT *rbt)
+{
+	if (NULL == rbt) { return ; }
+	postTraverse(rbt->getLeft());
+	postTraverse(rbt->getRight());
+	list<Run>* runlist;
+
+	if (NULL != (runlist = rbt->getRun())) {
+		cout << rbt->getNodeString() << ": ";
+		list<Run>::iterator it, itEnd;
+		it = runlist->begin(), itEnd = runlist->end();
+		while (it != itEnd) {
+			cout << '(' << it->getRuleNumber() << ',' << it->getRunNumber() << ',' << it->isTerminal() << ") ";
+			++it;
+		}
+		putchar('\n');
 	}
 }

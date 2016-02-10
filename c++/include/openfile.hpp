@@ -15,6 +15,7 @@ class Rule {
 		unsigned _ruleNumber;
 		string _ruleBitString;
 	public:
+		Rule() { }
 		Rule(unsigned ruleNumber, string ruleBitString) {
 			++_number_of_rule;
 			_ruleNumber = ruleNumber;

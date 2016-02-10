@@ -37,11 +37,23 @@ int main(int argc, char* argv[])
 	vector<RBT>* rbt = new vector<RBT>;
 	makeRunBasedTrie(rulelist,rbt);
 
+	/*
+	{
+		unsigned i = 1;
+		while (i <= 4) {
+			postTraverse(&((*rbt)[i]));
+			putchar('\n');
+			++i;
+		}
+	}
+	*/
+
 	//cout << *packetIt << ' ' << sequentialSearch(rulelist, *packetIt) << endl;
 
 	/* delete dynamicaly allocated memories */
 	delete rulelist;
 	delete packets;
+	delete rbt;
 
 	return 0;
 }
