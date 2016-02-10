@@ -21,14 +21,10 @@ class Rule {
 			_ruleBitString = ruleBitString;
 		}
 		~Rule() {
-		//	printf("call the Rule deconstructor.\n");
+		//	printf("call the Rule deconstructor.\n"); 
 		}
-		unsigned getRuleNumber() {
-			return _ruleNumber;
-		}
-		string getRuleBitString() {
-			return _ruleBitString;
-		}
+		unsigned getRuleNumber() { return _ruleNumber; }
+		string getRuleBitString() { return _ruleBitString; }
 };
 
 

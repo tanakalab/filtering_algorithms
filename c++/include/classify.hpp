@@ -8,7 +8,7 @@
 #endif
 
 #ifndef __CLASIFICATION_RBT_HPP__
-#include <rbtrie.hpp>
+#include <rbt.hpp>
 #endif
 
 bool compareRuleAndPacket(Rule&, string&);

@@ -9,8 +9,7 @@ int main(int argc, char* argv[])
 	}
 
 	/* open and read rulelist */
-	list<Rule> *rulelist;
-	rulelist = new list<Rule>;
+	list<Rule> *rulelist = new list<Rule>;
 	try {
 		readRulelist(argv[1],rulelist);
 	} catch (string error_message) {
@@ -18,20 +17,25 @@ int main(int argc, char* argv[])
 	}
 
 	/* open and read packets */
-	list<string> *packets;
-	packets = new list<string>;
+	list<string> *packets = new list<string>;
 	try {
 		readPackets(argv[2],packets);
 	} catch (string error_message) {
 		cout << error_message; return 1;
 	}
 
+	/*
 	list<string>::iterator packetIt = packets->begin();
 	list<string>::iterator packetItEnd = packets->end();
 	while (packetIt != packetItEnd) {
 		cout << *packetIt << ' ' << sequentialSearch(rulelist, *packetIt) << endl;
 		++packetIt;
 	}
+	*/
+
+	/* make Run-Based Trie */
+	vector<RBT>* rbt = new vector<RBT>;
+	makeRunBasedTrie(rulelist,rbt);
 
 	//cout << *packetIt << ' ' << sequentialSearch(rulelist, *packetIt) << endl;
 
