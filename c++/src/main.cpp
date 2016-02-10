@@ -26,15 +26,14 @@ int main(int argc, char* argv[])
 		cout << error_message; return 1;
 	}
 
-	/*
 	list<string>::iterator packetIt = packets->begin();
 	list<string>::iterator packetItEnd = packets->end();
 	while (packetIt != packetItEnd) {
-		cout << *packetIt << endl;
+		cout << *packetIt << ' ' << sequentialSearch(rulelist, *packetIt) << endl;
 		++packetIt;
 	}
-	*/
 
+	//cout << *packetIt << ' ' << sequentialSearch(rulelist, *packetIt) << endl;
 
 	/* delete dynamicaly allocated memories */
 	delete rulelist;
