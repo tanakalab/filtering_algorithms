@@ -11,7 +11,8 @@
 #include <rbt.hpp>
 #endif
 
+unsigned simpleSearch(vector<RBT> *&, vector<unsigned>*, string&, unsigned);
 bool compareRuleAndPacket(Rule&, string&);
-unsigned sequentialSearch(list<Rule> *&, string);
+unsigned sequentialSearch(list<Rule> *&, string&);
 
 #endif

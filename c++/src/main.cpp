@@ -24,15 +24,6 @@ int main(int argc, char* argv[])
 		cout << error_message; return 1;
 	}
 
-	/*
-	list<string>::iterator packetIt = packets->begin();
-	list<string>::iterator packetItEnd = packets->end();
-	while (packetIt != packetItEnd) {
-		cout << *packetIt << ' ' << sequentialSearch(rulelist, *packetIt) << endl;
-		++packetIt;
-	}
-	*/
-
 	/* make Run-Based Trie */
 	vector<RBT>* rbt = new vector<RBT>;
 	makeRunBasedTrie(rulelist,rbt);
@@ -49,6 +40,22 @@ int main(int argc, char* argv[])
 	*/
 
 	//cout << *packetIt << ' ' << sequentialSearch(rulelist, *packetIt) << endl;
+
+	list<string>::iterator packetIt = packets->begin();
+	list<string>::iterator packetItEnd = packets->end();
+		
+	vector<unsigned> *A = new vector<unsigned>;
+	for (unsigned i = 0; i <= rulelist->size(); ++i)
+			A->push_back(0); 
+	while (packetIt != packetItEnd) {
+		for (unsigned i = 0; i <= rulelist->size(); ++i)
+			(*A)[i] = 0;
+		cout << *packetIt << ' ' << sequentialSearch(rulelist, *packetIt) << endl;
+		cout << *packetIt << ' ' << simpleSearch(rbt, A, *packetIt, rulelist->size()) << endl;
+		putchar('\n');
+		++packetIt;
+	}
+	delete A;
 
 	/* delete dynamicaly allocated memories */
 	delete rulelist;
