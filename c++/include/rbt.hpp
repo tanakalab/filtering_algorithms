@@ -89,9 +89,9 @@ class MR {
 		static long unsigned _number_of_node_of_mr;
 		char _nodeBit;
 		string _nodeString;
-		unsigned _dIndex;       /* an index for a Decision Tree Search */
+		long _dIndex;       /* an index for a Decision Tree Search */
 		unsigned _trieNumber;
-		unsigned _weight;
+		long _weight;
 		MR* _parent;
 		MR* _left;
 		MR* _right;
@@ -99,6 +99,7 @@ class MR {
 		string _safeNodeString; /* for pruning the Decision Tree */
 		MR* _safeLeft;          /* for pruning the Decision Tree */
 		MR* _safeRight;         /* for pruning the Decision Tree */
+		long _safeWeight;       /* for pruning the Decision Tree */
 		list<string>* _mrlist;  /* for pruning the Decision Tree */
 	public:
 		MR() { }
@@ -116,19 +117,24 @@ class MR {
 			_safeNodeString = "";
 			_safeLeft = NULL;
 			_safeRight = NULL;
+			_safeWeight = 0;
 		}
 		~MR() { /* printf("call a MR deconstructor.\n"); */ }
 		static void showNumberOfNodeOfMRT() { cout << _number_of_node_of_mr << endl; }
 		char getNodeBit() { return _nodeBit; }
 		string getNodeString() { return _nodeString; }
+		long getDindex() { return _dIndex; }
 		unsigned getTrieNumber() { return _trieNumber; }
-		unsigned getWeight() { return _weight; }
+		long getWeight() { return _weight; }
 		MR* getParent() { return _parent; }
 		MR* getLeft() { return _left; }
 		MR* getRight() { return _right; }
 		list<Run>* getRun() { return _runlist; }
 		list<string>* getMRInfo() { return _mrlist; }
-		void setWeight(unsigned w) { _weight = w; }
+		MR* getSafeLeft() { return _safeLeft; }
+		MR* getSafeRight() { return _safeRight; }
+		long getSafeWeight() { return _safeWeight; }
+		void setWeight(long w) { _weight = w; }
 		void setLeft(MR* left) { _left = left; }
 		void setRight(MR* right) { _right = right; }
 		void setRun(Run r) {
@@ -147,8 +153,118 @@ class MR {
 			if (NULL != _mrlist) {delete _mrlist, _mrlist = NULL; }
 		}
 		void changeNodeString(string s) { _nodeString = s; }
+		void setSafeLeft(MR* l) { _safeLeft = l; }
+		void setSafeRight(MR* r) { _safeRight = r; }
+		void setSafeWeight(long w) { _safeWeight = w; }
 };
 
+class Dtree {
+	private:
+		static unsigned long _number_of_node_of_dtree;
+		long _nindexed;
+		unsigned _Rule;
+		vector<Dtree*>* _children;
+		bool _offspring;
+		string _nodeString;
+		list<Run>* _runlist;
+		list<string>* _mrlist;
+	public:
+		Dtree() { }
+		Dtree(string s) {
+			++_number_of_node_of_dtree;
+			_nindexed = -1;
+			_Rule = 0;
+			_children = NULL;
+			_offspring = false;
+			_nodeString = s;
+			_runlist = NULL;
+			_mrlist = NULL;
+		}
+		Dtree(string s, list<Run>* ri, list<string>* si, long ni) {
+			++_number_of_node_of_dtree;
+			_nindexed = ni;
+			_Rule = 0;
+			_nodeString = s;
+			_offspring = false;
+			if (NULL != si) {
+				_mrlist = new list<string>;
+				list<string>::iterator it, itEnd;
+				it = si->begin(), itEnd = si->end();
+				while (it != itEnd) {
+					_mrlist->push_back(*it);
+					++it;
+				}
+			} else { _mrlist = NULL; }
+			if (NULL != ri) {
+				_runlist = new list<Run>;
+				list<Run>::iterator it, itEnd;
+				it = ri->begin(), itEnd = ri->end();
+				while (it != itEnd) {
+					_runlist->push_back(*it);
+					++it;
+				}
+			} else { _runlist = NULL; }
+			_children = NULL;
+		}
+		~Dtree() { /* printf("call the Dtree deconstructor.\n"); */ }
+		static void showNumberOfNodeOfDtree() { cout << _number_of_node_of_dtree << endl; }
+		long getNindex() { return _nindexed; }
+		string getNodeString() { return _nodeString; }
+		list<Run>* getRun() { return _runlist; }
+		list<string>* getMRS() { return _mrlist; }
+		void addRun(Run r) {
+			if (NULL == _runlist) { _runlist = new list<Run>; }
+			_runlist->push_back(r);
+		}
+		void addMRS(string s) {
+			if (NULL == _mrlist) { _mrlist = new list<string>; }
+			_mrlist->push_back(s);
+		}
+		void modifyString(string s) { _nodeString = &s[1]; }
+		void setChild(Dtree* c) {
+			if (NULL == _children) { _children = new vector<Dtree*>; }
+			_children->push_back(c);
+		}
+		void setRule(unsigned r) { _Rule = r; }
+		void setMRS(list<string>* sl) {
+			if (NULL != sl) {
+				_mrlist = new list<string>;
+				list<string>::iterator it, end;
+				it = sl->begin(), end = sl->end();
+				while (it != end) {
+					_mrlist->push_back(*it);
+					++it;
+				}
+			} else { _mrlist = NULL; }
+		}
+		void deleteMRS() {
+			if (NULL != _mrlist) { delete _mrlist; }
+			_mrlist = NULL;
+		}
+};
+
+void addRuleToLeaf(Dtree*);
+void traverseMRTforRevert(MR*, string);
+void revertMRS(MR*, Dtree*);
+void checkSafePointer(MR*);
+void revertWptr(MR*, Dtree*);
+void revert(MR*, Dtree*);
+MR* setPivotNode(MR*);
+void modifyLeftDummyPointer(MR*);
+void modifyRightDummyPointer(MR*);
+MR* modifyWptr(MR*, Dtree*);
+void modifySafeWeight(MR*);
+MR* traverseMRT(MR*, string);
+void modifyMRT(MR*, Dtree*);
+void cutMRSFirstBit(Dtree*);
+string compSameBit(string, string);
+void spanMaskForPhi(Dtree*);
+void deleteDuplicatingElements(Dtree*);
+void inheritMRS(Dtree *, list<string>*);
+void inheritRun(Dtree *, list<Run>*);
+Dtree* makeDtreeNode(MR*, Dtree*);
+void traverseMRforDtree(MR*, Dtree*, vector<MR>*);
+void constructDtree(Dtree*, vector<MR>*);
 void addMRTInfo(MR*);
 void MRTInfoTraverse(MR*);
 void settingMRInfo(vector<MR>*);

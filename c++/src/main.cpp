@@ -8,7 +8,7 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	/* open and read rulelist */
+	/* open and read a rulelist */
 	list<Rule> *rulelist = new list<Rule>;
 	try {
 		readRulelist(argv[1],rulelist);
@@ -24,22 +24,30 @@ int main(int argc, char* argv[])
 		cout << error_message; return 1;
 	}
 
-	/* make Run-Based Trie */
+	/* make a Run-Based Trie */
 	vector<RBT>* rbt = new vector<RBT>;
 	makeRunBasedTrie(rulelist,rbt);
 
-	/* make Match Run Set Trie */
+	/* make a Match Run Set Trie */
 	vector<MR>* mr = new vector<MR>;
 	makeMatchRunSetTrie(rbt,mr);
 
+	/* make a Decision Tree */
+	Dtree *dtree;
+	dtree = new Dtree("root");
+	constructDtree(dtree, mr);
+	
+	/*
 	{
 		unsigned i = 1;
-		while (i <= 4) {
+		while (i < rbt->size()) {
 			postTraverse(&((*mr)[i]));
 			putchar('\n');
 			++i;
 		}
 	}
+	*/
+
 
 	/*
 	list<string>::iterator packetIt = packets->begin();

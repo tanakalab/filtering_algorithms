@@ -61,5 +61,5 @@ unsigned sequentialSearch(list<Rule>*& rulelist, string& packet)
 		++ruleIt;
 	}
 	
-	return 0;
+	return rulelist->size()+1;
 }

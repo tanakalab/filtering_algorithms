@@ -26,6 +26,7 @@ class Rule {
 		}
 		unsigned getRuleNumber() { return _ruleNumber; }
 		string getRuleBitString() { return _ruleBitString; }
+		static unsigned getNumberOfRule() { return _number_of_rule; }
 };
 
 
