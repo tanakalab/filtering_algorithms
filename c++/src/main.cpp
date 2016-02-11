@@ -28,19 +28,20 @@ int main(int argc, char* argv[])
 	vector<RBT>* rbt = new vector<RBT>;
 	makeRunBasedTrie(rulelist,rbt);
 
-	/*
+	/* make Match Run Set Trie */
+	vector<MR>* mr = new vector<MR>;
+	makeMatchRunSetTrie(rbt,mr);
+
 	{
 		unsigned i = 1;
 		while (i <= 4) {
-			postTraverse(&((*rbt)[i]));
+			postTraverse(&((*mr)[i]));
 			putchar('\n');
 			++i;
 		}
 	}
-	*/
 
-	//cout << *packetIt << ' ' << sequentialSearch(rulelist, *packetIt) << endl;
-
+	/*
 	list<string>::iterator packetIt = packets->begin();
 	list<string>::iterator packetItEnd = packets->end();
 		
@@ -56,6 +57,7 @@ int main(int argc, char* argv[])
 		++packetIt;
 	}
 	delete A;
+	*/
 
 	/* delete dynamicaly allocated memories */
 	delete rulelist;

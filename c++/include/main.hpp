@@ -10,5 +10,6 @@
 #include <rbt.hpp>
 #endif
 
+long unsigned MR::_number_of_node_of_mr = 0;
 long unsigned RBT::_number_of_node_of_rbt = 0;
 unsigned Rule::_number_of_rule = 0;
