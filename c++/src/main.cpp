@@ -37,6 +37,7 @@ int main(int argc, char* argv[])
 	dtree = new Dtree("root");
 	constructDtree(dtree, mr);
 	
+	showChild(dtree);
 	/*
 	{
 		unsigned i = 1;

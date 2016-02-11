@@ -2,21 +2,73 @@
 
 #include <rbt.hpp>
 
+void showChild(Dtree* d)
+{
+	if (NULL != d->getChild()) {
+		for (unsigned i = 0; i < d->getNumberOfChild(); ++i) {
+			if ((*(d->getChild()))[i]->getNodeString() != "dummy") {
+				cout << (*(d->getChild()))[i]->getNodeString();
+				cout << ' ';
+				showChild((*(d->getChild()))[i]);
+			}
+		}
+	} else {
+		cout << '(' << d->getRule() << ')' << endl;
+	}
+}
+
+bool isNoChild(Dtree *n)
+{
+	if (0 == n->getNumberOfChild() && 0 == n->getRule()) { 
+		Dtree::decNumberOfDtree();
+		return true;
+	}
+	return false;
+}
+
+void cutChildNode(Dtree* n)
+{
+	n->setRule((*(n->getChild()))[0]->getRule());
+	Dtree::minusNumberOfDtree(n->getNumberOfChild());
+	n->deleteChild();
+}
+
+void checkChildNode(Dtree *d)
+{
+	if (0 == d->getNumberOfChild()) { return ; }
+	else if (1 == d->getNumberOfChild()) {
+		if (0 != (*(d->getChild()))[0]->getRule()) { cutChildNode(d); }
+		else {
+			if (0 == (*(d->getChild()))[0]->getNumberOfChild()) { cutChildNode(d); }
+			return ;
+		}
+	} else {
+		d->getChild()->erase(
+				remove_if(d->getChild()->begin(), d->getChild()->end(), isNoChild), d->getChild()->end());
+		if (0 == (*(d->getChild()))[0]->getRule()) { return ; }
+		unsigned x = (*(d->getChild()))[0]->getRule();
+		for (unsigned i = 1; i < d->getNumberOfChild(); ++i)
+			if ((*(d->getChild()))[i]->getRule() != x)
+				return ;
+		cutChildNode(d);
+	}
+}
+
 void addRuleToLeaf(Dtree *n)
 {
 	unsigned defaultRule = Rule::getNumberOfRule();
 	unsigned priority = defaultRule+1;
 	
 	if (NULL != n->getRun()) {
-		vector<int> A;
+		vector<unsigned> A;
 		for (unsigned i = 0; i <= defaultRule; ++i) { A.push_back(0); }
 		list<Run>::reverse_iterator rit, ritEnd;
 		rit = n->getRun()->rbegin(), ritEnd = n->getRun()->rend();
 		while (rit != ritEnd) {
-			if (rit->getRuleNumber()-1 == A[rit->getRuleNumber()]) {
-				A[rit->getRuleNumber()] = rit->getRuleNumber();
+			if (A[rit->getRuleNumber()] == rit->getRunNumber()-1) {
+				A[rit->getRuleNumber()] = rit->getRunNumber();
 				if (rit->isTerminal())
-					if (rit->getRuleNumber() < defaultRule)
+					if (rit->getRuleNumber() < priority)
 						priority = rit->getRuleNumber();
 			}
 			++rit;
@@ -369,6 +421,8 @@ void traverseMRforDtree(MR* w, Dtree* p, vector<MR> *mr)
 			traverseMRforDtree(wptr, ptr, mr);
 			revert(sptr, ptr);
 		} else { addRuleToLeaf(n); }
+		n->deleteRun();
+		checkChildNode(n);
 	}
 }
 

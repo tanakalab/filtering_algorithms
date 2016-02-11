@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <cmath>
+#include <algorithm>
 
 class Run {
 	private:
@@ -208,10 +209,18 @@ class Dtree {
 		}
 		~Dtree() { /* printf("call the Dtree deconstructor.\n"); */ }
 		static void showNumberOfNodeOfDtree() { cout << _number_of_node_of_dtree << endl; }
+		static void decNumberOfDtree() { --_number_of_node_of_dtree; }
+		static void minusNumberOfDtree(long n) { _number_of_node_of_dtree -= n; }
 		long getNindex() { return _nindexed; }
 		string getNodeString() { return _nodeString; }
 		list<Run>* getRun() { return _runlist; }
 		list<string>* getMRS() { return _mrlist; }
+		unsigned getNumberOfChild() {
+			if (NULL != _children) { return _children->size(); }
+			else { return 0; }
+		}
+		vector<Dtree*>* getChild() { return _children; }
+		unsigned getRule() { return _Rule; }	
 		void addRun(Run r) {
 			if (NULL == _runlist) { _runlist = new list<Run>; }
 			_runlist->push_back(r);
@@ -241,8 +250,20 @@ class Dtree {
 			if (NULL != _mrlist) { delete _mrlist; }
 			_mrlist = NULL;
 		}
+		void deleteRun() {
+			if (NULL != _runlist) { delete _runlist; }
+			_runlist = NULL;
+		}
+		void deleteChild() {
+			if (NULL != _children) { delete _children; }
+			_children = NULL;
+		}
 };
 
+void showChild(Dtree *);
+bool isNoChild(Dtree*);
+void cutChildNode(Dtree*);
+void checkChildNode(Dtree*);
 void addRuleToLeaf(Dtree*);
 void traverseMRTforRevert(MR*, string);
 void revertMRS(MR*, Dtree*);
