@@ -89,7 +89,6 @@ class MR {
 		static long unsigned _number_of_node_of_mr;
 		char _nodeBit;
 		string _nodeString;
-		string _mrString;       /* for pruning the Decision Tree */
 		unsigned _dIndex;       /* an index for a Decision Tree Search */
 		unsigned _trieNumber;
 		unsigned _weight;
@@ -106,7 +105,6 @@ class MR {
 		MR(char nodeBit, unsigned trieNumber, string nodeString, MR* p) {
 			_nodeBit = nodeBit;
 			_nodeString = nodeString;
-			_mrString = nodeString;
 			_dIndex = 0;
 			_trieNumber = trieNumber;
 			_weight = 0;
@@ -123,14 +121,12 @@ class MR {
 		static void showNumberOfNodeOfMRT() { cout << _number_of_node_of_mr << endl; }
 		char getNodeBit() { return _nodeBit; }
 		string getNodeString() { return _nodeString; }
-		string getMRString() { return _mrString; }
 		unsigned getTrieNumber() { return _trieNumber; }
 		unsigned getWeight() { return _weight; }
 		MR* getParent() { return _parent; }
 		MR* getLeft() { return _left; }
 		MR* getRight() { return _right; }
 		list<Run>* getRun() { return _runlist; }
-		void changeMRString(string s) { _mrString = s; }
 		void setWeight(unsigned w) { _weight = w; }
 		void setLeft(MR* left) { _left = left; }
 		void setRight(MR* right) { _right = right; }
@@ -138,10 +134,18 @@ class MR {
 			if (NULL == _runlist) { _runlist = new list<Run>; }
 			_runlist->push_back(r);
 		}
-		void changeNodeString(string s) { _nodeString = s; }
 		void subtractWeight(unsigned m) { _weight -= m; }
+		void deleteRun() { 
+			if (NULL != _runlist) { delete _runlist, _runlist = NULL; }
+		}
+		void changeNodeString(string s) { _nodeString = s; }
 };
 
+void moveRun(MR*, MR*);
+void updateMRT(MR*, MR*, char);
+bool noMRS(MR*);
+void changeMRSet(MR*);
+void changeAllMRSet(vector<MR>*);
 void walkToRoot(MR*);
 void MRTWeightTraverse(MR*);
 void allMRTWeightTraverse(vector<MR>*);
