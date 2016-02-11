@@ -2,6 +2,39 @@
 
 #include <rbt.hpp>
 
+void addMRTInfo(MR* mr)
+{
+	MR *ptr = mr, *base = mr;
+
+	ptr = ptr->getParent();
+	while (NULL != ptr) {
+		if (0 < ptr->getWeight()) {
+			ptr->setMRInfo(base->getNodeString());
+		}
+		ptr = ptr->getParent();
+	}
+}
+
+void MRTInfoTraverse(MR* mr)
+{
+	if (NULL == mr) { return; }
+
+	MRTInfoTraverse(mr->getLeft());
+	MRTInfoTraverse(mr->getRight());
+
+	if (mr->getWeight() > 0) { addMRTInfo(mr); }
+}
+
+void settingMRInfo(vector<MR>* mrt)
+{
+	vector<MR>::iterator it = mrt->begin();
+	vector<MR>::iterator end = mrt->end();
+	while (it != end) {
+		MRTInfoTraverse(&(*it));
+		++it;
+	}
+}
+
 void moveRun(MR* p, MR* c)
 {
 	if (NULL != p->getRun()) {
@@ -26,8 +59,14 @@ void updateMRT(MR* mrp, MR* mrc, char c)
 			else { mrp->setRight(new MR(c, i, mrp->getNodeString()+"1", mrp)); }
 	}
 	mrp->setWeight(0);
-	if ('0' == c) { mrp->getLeft()->setWeight(999), moveRun(mrp, mrp->getLeft()), mrp->deleteRun(); }
-	else { mrp->getRight()->setWeight(999), moveRun(mrp, mrp->getRight()), mrp->deleteRun(); }
+	if ('0' == c) { 
+		mrp->getLeft()->setWeight(999);
+		moveRun(mrp, mrp->getLeft()), mrp->deleteRun(); 
+	}
+	else { 
+		mrp->getRight()->setWeight(999);
+		moveRun(mrp, mrp->getRight()), mrp->deleteRun(); 
+	}
 }
 
 bool noMRS(MR* mr)
@@ -85,6 +124,7 @@ void walkToRoot(MR* ptr)
 		if (NULL != wptr->getRun() || 'p' == wptr->getNodeBit()) {
 			wptr->subtractWeight(baseWeight);
 			if ('p' != wptr->getNodeBit()) { addRun(wptr, base); }
+			//wptr->setMRInfo(base->getNodeString());
 			if (0 == wptr->getWeight()) { wptr->deleteRun(); }
 		}
 		wptr = wptr->getParent();
@@ -159,6 +199,7 @@ void makeMatchRunSetTrie(vector<RBT>*& rbt, vector<MR>* mr)
 	copyRBTtoMRT(rbt,mr);
 	allMRTWeightTraverse(mr);
 	changeAllMRSet(mr);
+	settingMRInfo(mr);
 }
 
 void traverseAndMakeRBTNode(RBT *rbt, Run run)
@@ -290,7 +331,8 @@ void postTraverse(MR *mr)
 	postTraverse(mr->getLeft());
 	postTraverse(mr->getRight());
 
-	cout << mr->getNodeString() << ' ' << mr->getWeight();
+	if (mr->getWeight() > 0) {
+		cout << mr->getNodeString() << ' ' << mr->getWeight();
 	list<Run>* runlist;
 
 	if (NULL != (runlist = mr->getRun())) {
@@ -302,5 +344,18 @@ void postTraverse(MR *mr)
 			++it;
 		}
 	}
+
+	list<string>* slist;
+	if (NULL != (slist = mr->getMRInfo())) {
+		printf(" -- [");
+		list<string>::iterator it, itEnd;
+		it = slist->begin(), itEnd = slist->end();
+		while (it != itEnd) {
+			cout << *it << ", ";
+			++it;
+		}
+		cout << "]";
+	}
 	putchar('\n');
+	}
 }

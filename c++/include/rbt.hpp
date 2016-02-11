@@ -127,6 +127,7 @@ class MR {
 		MR* getLeft() { return _left; }
 		MR* getRight() { return _right; }
 		list<Run>* getRun() { return _runlist; }
+		list<string>* getMRInfo() { return _mrlist; }
 		void setWeight(unsigned w) { _weight = w; }
 		void setLeft(MR* left) { _left = left; }
 		void setRight(MR* right) { _right = right; }
@@ -134,13 +135,23 @@ class MR {
 			if (NULL == _runlist) { _runlist = new list<Run>; }
 			_runlist->push_back(r);
 		}
+		void setMRInfo(string s) {
+			if (NULL == _mrlist) { _mrlist = new list<string>; }
+			_mrlist->push_back(s);
+		}
 		void subtractWeight(unsigned m) { _weight -= m; }
 		void deleteRun() { 
 			if (NULL != _runlist) { delete _runlist, _runlist = NULL; }
 		}
+		void deleteMRInfo() {
+			if (NULL != _mrlist) {delete _mrlist, _mrlist = NULL; }
+		}
 		void changeNodeString(string s) { _nodeString = s; }
 };
 
+void addMRTInfo(MR*);
+void MRTInfoTraverse(MR*);
+void settingMRInfo(vector<MR>*);
 void moveRun(MR*, MR*);
 void updateMRT(MR*, MR*, char);
 bool noMRS(MR*);
