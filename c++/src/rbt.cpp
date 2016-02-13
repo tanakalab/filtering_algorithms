@@ -434,6 +434,31 @@ void constructDtree(Dtree *d, vector<MR>* mr)
 	Dtree::showNumberOfNodeOfDtree();
 }
 
+void addDIndex(MR* ptr)
+{
+	if (NULL == ptr) { return ; }
+
+	addDIndex(ptr->getLeft());
+	addDIndex(ptr->getRight());
+
+	if (0 < ptr->getWeight()) {
+		ptr->setDIndex(MR::getCounterForDIndex());
+		MR::incDIndex();
+	}
+}
+
+void settingDIndex(vector<MR>* mrt)
+{
+	unsigned w = mrt->size();
+	MR* ptr;
+	for (unsigned i = 1; i <= w; ++i) {
+		ptr = &(*mrt)[i];
+		MR::initDIndex();
+		addDIndex(ptr);
+		MR::setMaxDIndex(MR::getCounterForDIndex()-1);
+	}
+}
+
 void addMRTInfo(MR* mr)
 {
 	MR *ptr = mr, *base = mr;
@@ -632,6 +657,7 @@ void makeMatchRunSetTrie(vector<RBT>*& rbt, vector<MR>* mr)
 	allMRTWeightTraverse(mr);
 	changeAllMRSet(mr);
 	settingMRInfo(mr);
+	settingDIndex(mr);
 }
 
 void traverseAndMakeRBTNode(RBT *rbt, Run run)
@@ -730,13 +756,13 @@ void makeRunBasedTrie(list<Rule>*& rulelist, vector<RBT> *rbt)
 		rpIt = rpPtr->begin(), rpItEnd = rpPtr->end();
 		while (rpIt != rpItEnd) {
 			traverseAndMakeRBTNode(&(*rbt)[rpIt->getStartBit()], rpIt->getRun());
-			//cout << '(' << rpIt->getRun().getBitString() << ',' << rpIt->getStartBit() << ')' << ' ';
 			++rpIt;
 		}
-		//cout << "\n=== " << ruleIt->getRuleNumber() << " ===\n";
 		++ruleIt;
 	}
 }
+
+/* following codes are for debug */
 
 void postTraverse(RBT *rbt)
 {
@@ -764,9 +790,10 @@ void postTraverse(MR *mr)
 	postTraverse(mr->getRight());
 
 	if (mr->getWeight() > 0) {
-		cout << mr->getNodeString() << ' ' << mr->getWeight();
-	list<Run>* runlist;
+		cout << mr->getNodeString() << ' ' << mr->getDindex() << endl;
 
+	/*
+	list<Run>* runlist;
 	if (NULL != (runlist = mr->getRun())) {
 		printf(": ");
 		list<Run>::iterator it, itEnd;
@@ -789,5 +816,6 @@ void postTraverse(MR *mr)
 		cout << "]";
 	}
 	putchar('\n');
+	*/
 	}
 }

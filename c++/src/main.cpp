@@ -38,19 +38,17 @@ int main(int argc, char* argv[])
 	constructDtree(dtree, mr);
 	
 	showChild(dtree);
+
 	/*
 	{
 		unsigned i = 1;
-		while (i < rbt->size()) {
+		while (i < mr->size()) {
 			postTraverse(&((*mr)[i]));
 			putchar('\n');
 			++i;
 		}
 	}
-	*/
 
-
-	/*
 	list<string>::iterator packetIt = packets->begin();
 	list<string>::iterator packetItEnd = packets->end();
 		
