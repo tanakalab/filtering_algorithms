@@ -10,6 +10,9 @@
 #include <rbt.hpp>
 #endif
 
+double Result::_latency_of_sequential = 0;
+double Result::_latency_of_simpleSearch = 0;
+double Result::_latency_of_RBTDtreeSearch = 0;
 long unsigned Dtree::_number_of_node_of_dtree = 0;
 vector<long unsigned>* MR::_maxDIndex = NULL;
 long unsigned MR::_counterForDIndex = 0;

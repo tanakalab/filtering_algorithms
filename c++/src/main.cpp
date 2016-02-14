@@ -36,7 +36,21 @@ int main(int argc, char* argv[])
 	Dtree *dtree;
 	dtree = new Dtree("root");
 	constructDtree(dtree, mr);
+
+	/* check the results of classification via Simple Search and Decision Tree Search */
+	list<Result>* resultOfSequential = new list<Result>;
+	classifyViaSequentialSearch(rulelist, packets, resultOfSequential);
+
+	list<Result>* resultOfSimpleSearch = new list<Result>;
+	{
+  	unsigned n = rulelist->size();
+		classifyViaSimpleSearch(rbt, n, packets, resultOfSimpleSearch);
+	}
 	
+	list<Result>* resultOfRBTDtree = new list<Result>;
+	classifyViaRBTDtree(dtree, mr, packets, resultOfRBTDtree);
+
+	/*
 	{
 		unsigned i = 1;
 		while (i < mr->size()) {
@@ -46,7 +60,7 @@ int main(int argc, char* argv[])
 		}
 	}
 
-	//showChild(dtree);
+	showChild(dtree);
 
 	list<string>::iterator packetIt = packets->begin();
 	list<string>::iterator packetItEnd = packets->end();
@@ -63,7 +77,6 @@ int main(int argc, char* argv[])
 		++packetIt;
 	}
 	delete A;
-	/*
 	putchar('\n');
 	string s = "01001111";
 	cout << RBTDtreeSearch(dtree, mr, s) << endl << endl;

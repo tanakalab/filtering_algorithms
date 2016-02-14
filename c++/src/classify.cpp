@@ -2,6 +2,30 @@
 
 #include <classify.hpp>
 
+void classifyViaRBTDtree(Dtree*& dtree, vector<MR>*& mrt, list<string>*& packets, list<Result> *results)
+{
+	list<string>::iterator pIt, pEnd;
+	pIt = packets->begin(), pEnd = packets->end();
+
+	struct timeval startTime, endTime;
+	double sec_timeOfDay;
+	unsigned result;
+
+	gettimeofday(&startTime, NULL);
+
+	while (pIt != pEnd) {
+		result = RBTDtreeSearch(dtree, mrt, *pIt);
+		Result r(*pIt, result);
+		results->push_back(r);
+		++pIt;
+	}
+
+	gettimeofday(&endTime, NULL);
+	sec_timeOfDay = (endTime.tv_sec - startTime.tv_sec)
+		               + (endTime.tv_usec - startTime.tv_usec) / 1000000.0;
+	Result::setLatencyRBTDtree(sec_timeOfDay);
+}
+
 unsigned RBTDtreeSearch(Dtree *&d, vector<MR> *&mrt, string& packet)
 {
 	MR* mptr;
@@ -47,6 +71,34 @@ unsigned RBTDtreeSearch(Dtree *&d, vector<MR> *&mrt, string& packet)
 	return result;
 }
 
+void classifyViaSimpleSearch(vector<RBT>*& rbt, unsigned& n, list<string>*& packets, list<Result>* results)
+{
+	list<string>::iterator pIt, pEnd;
+	pIt = packets->begin(), pEnd = packets->end();
+
+	struct timeval startTime, endTime;
+	double sec_timeOfDay;
+	unsigned result;
+	vector<unsigned> *A = new vector<unsigned>;
+	for (unsigned i = 0; i <=n ; ++i) { A->push_back(0); }
+
+	gettimeofday(&startTime, NULL);
+
+	while (pIt != pEnd) {
+		for (unsigned i = 0; i <=n ; ++i) { (*A)[i] = 0; }
+		result = simpleSearch(rbt, A, *pIt, n);
+		Result r(*pIt, result);
+		results->push_back(r);
+		++pIt;
+	}
+
+	gettimeofday(&endTime, NULL);
+	sec_timeOfDay = (endTime.tv_sec - startTime.tv_sec)
+		               + (endTime.tv_usec - startTime.tv_usec) / 1000000.0;
+	Result::setLatencySimpleSearch(sec_timeOfDay);
+	;
+}
+
 unsigned simpleSearch(vector<RBT>*& rbt, vector<unsigned> *A, string& packet, unsigned n)
 {
 	RBT* ptr;
@@ -80,6 +132,30 @@ unsigned simpleSearch(vector<RBT>*& rbt, vector<unsigned> *A, string& packet, un
 	}
 
 	return match;
+}
+
+void classifyViaSequentialSearch(list<Rule>*& rulelist, list<string>*& packets, list<Result>* results)
+{
+	list<string>::iterator pIt, pEnd;
+	pIt = packets->begin(), pEnd = packets->end();
+
+	struct timeval startTime, endTime;
+	double sec_timeOfDay;
+	unsigned result;
+
+	gettimeofday(&startTime, NULL);
+
+	while (pIt != pEnd) {
+		result = sequentialSearch(rulelist, *pIt);
+		Result r(*pIt, result);
+		results->push_back(r);
+		++pIt;
+	}
+
+	gettimeofday(&endTime, NULL);
+	sec_timeOfDay = (endTime.tv_sec - startTime.tv_sec)
+		               + (endTime.tv_usec - startTime.tv_usec) / 1000000.0;
+	Result::setLatencySequential(sec_timeOfDay);
 }
 
 bool compareRuleAndPacket(Rule& rule, string& packet)
