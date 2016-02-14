@@ -2,6 +2,51 @@
 
 #include <classify.hpp>
 
+unsigned RBTDtreeSearch(Dtree *&d, vector<MR> *&mrt, string& packet)
+{
+	MR* mptr;
+	Dtree* dptr = d;
+	unsigned w = packet.length();
+	unsigned result;
+
+	for (unsigned t = 1; t <= w; ++t) {
+		int index = -1;
+		mptr = &(*mrt)[t];
+		for (unsigned i = t-1; i < w; ++i) {
+			//cout << "dindex: " << mptr->getDindex() << endl;
+			if (-1 != mptr->getDindex()) { index = mptr->getDindex(); }
+			if ('0' == packet[i]) {
+				if (NULL != mptr->getLeft()) { 
+					mptr = mptr->getLeft(); 
+//					cout << packet[i] << endl;
+				}
+				else { break; }
+			} else {
+				if (NULL != mptr->getRight()) { 
+					mptr = mptr->getRight(); 
+					//cout << packet[i] << endl;
+				}
+				else { break; }
+			}
+		}
+		//cout << "index: " << index << endl;
+		//
+		if (dptr->getNodeString() == "dummy") {
+			printf("dummy\n"); break;
+		}
+		//
+		if (-1 != mptr->getDindex()) { index = mptr->getDindex(); }
+		dptr = (*(dptr->getChild()))[index];
+		//cout << dptr->getNodeString() << endl;
+		if (0 != dptr->getRule()) { 
+			result = dptr->getRule(); 
+			break; 
+		}
+	}
+
+	return result;
+}
+
 unsigned simpleSearch(vector<RBT>*& rbt, vector<unsigned> *A, string& packet, unsigned n)
 {
 	RBT* ptr;

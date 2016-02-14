@@ -11,6 +11,7 @@
 #include <rbt.hpp>
 #endif
 
+unsigned RBTDtreeSearch(Dtree *&, vector<MR> *&, string &);
 unsigned simpleSearch(vector<RBT> *&, vector<unsigned>*, string&, unsigned);
 bool compareRuleAndPacket(Rule&, string&);
 unsigned sequentialSearch(list<Rule> *&, string&);

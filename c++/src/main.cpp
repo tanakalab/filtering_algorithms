@@ -37,9 +37,6 @@ int main(int argc, char* argv[])
 	dtree = new Dtree("root");
 	constructDtree(dtree, mr);
 	
-	showChild(dtree);
-
-	/*
 	{
 		unsigned i = 1;
 		while (i < mr->size()) {
@@ -49,21 +46,29 @@ int main(int argc, char* argv[])
 		}
 	}
 
+	//showChild(dtree);
+
 	list<string>::iterator packetIt = packets->begin();
 	list<string>::iterator packetItEnd = packets->end();
 		
 	vector<unsigned> *A = new vector<unsigned>;
-	for (unsigned i = 0; i <= rulelist->size(); ++i)
-			A->push_back(0); 
+	for (unsigned i = 0; i <= rulelist->size(); ++i) { A->push_back(0); }
 	while (packetIt != packetItEnd) {
 		for (unsigned i = 0; i <= rulelist->size(); ++i)
 			(*A)[i] = 0;
 		cout << *packetIt << ' ' << sequentialSearch(rulelist, *packetIt) << endl;
 		cout << *packetIt << ' ' << simpleSearch(rbt, A, *packetIt, rulelist->size()) << endl;
+		cout << *packetIt << ' ' << RBTDtreeSearch(dtree, mr, *packetIt) << endl;
 		putchar('\n');
 		++packetIt;
 	}
 	delete A;
+	/*
+	putchar('\n');
+	string s = "01001111";
+	cout << RBTDtreeSearch(dtree, mr, s) << endl << endl;
+	s = "01010000";
+	cout << RBTDtreeSearch(dtree, mr, s) << endl;
 	*/
 
 	/* delete dynamicaly allocated memories */
