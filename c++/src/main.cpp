@@ -38,6 +38,8 @@ int main(int argc, char* argv[])
 	constructDtree(dtree, mr);
 
 	/* check the results of classification via Simple Search and Decision Tree Search */
+	list< list<Result> > results;
+
 	list<Result>* resultOfSequential = new list<Result>;
 	classifyViaSequentialSearch(rulelist, packets, resultOfSequential);
 
@@ -46,10 +48,13 @@ int main(int argc, char* argv[])
   	unsigned n = rulelist->size();
 		classifyViaSimpleSearch(rbt, n, packets, resultOfSimpleSearch);
 	}
+	results.push_back(*resultOfSimpleSearch);
 	
 	list<Result>* resultOfRBTDtree = new list<Result>;
 	classifyViaRBTDtree(dtree, mr, packets, resultOfRBTDtree);
+	results.push_back(*resultOfRBTDtree);
 
+	assert(0 == checkClassifyResult(resultOfSequential, results));
 	/*
 	{
 		unsigned i = 1;

@@ -10,6 +10,10 @@
 #include <rbt.hpp>
 #endif
 
+#ifndef __CLASIFICATION_CHECK_HPP__
+#include <check.hpp>
+#endif
+
 double Result::_latency_of_sequential = 0;
 double Result::_latency_of_simpleSearch = 0;
 double Result::_latency_of_RBTDtreeSearch = 0;

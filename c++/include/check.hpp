@@ -7,9 +7,16 @@
 #include <openfile.hpp>
 #endif
 
+#ifndef __CLASIFICATION_CLASSIFY_HPP__
+#include <classify.hpp>
+#endif
+
 #ifndef __CLASIFICATION_RBT_HPP__
 #include <rbt.hpp>
 #endif
 
+#include <assert.h>
+
+unsigned checkClassifyResult(list<Result> *&, list< list<Result> > &);
 
 #endif
