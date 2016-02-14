@@ -88,9 +88,11 @@ class RunPair {
 class MR {
 	private:
 		static long unsigned _number_of_node_of_mr;
+		static long unsigned _counterForDIndex;
+		static vector<long unsigned> *_maxDIndex;
 		char _nodeBit;
 		string _nodeString;
-		long _dIndex;       /* an index for a Decision Tree Search */
+		long _dIndex;           /* an index for a Decision Tree Search */
 		unsigned _trieNumber;
 		long _weight;
 		MR* _parent;
@@ -104,10 +106,42 @@ class MR {
 		list<string>* _mrlist;  /* for pruning the Decision Tree */
 	public:
 		MR() { }
+		MR(char b) {
+			_nodeBit = b;
+			_nodeString = "";
+			_dIndex = -1;
+			_trieNumber = 0;
+			_weight = 0;
+			_parent = NULL;
+			_left = NULL;
+			_right = NULL;
+			_runlist = NULL;
+			_mrlist = NULL;
+			_safeNodeString = "";
+			_safeLeft = NULL;
+			_safeRight = NULL;
+			_safeWeight = 0;
+		}
+		MR(char b, int tn) {
+			_nodeBit = b;
+			_nodeString = "";
+			_dIndex = -1;
+			_trieNumber = tn;
+			_weight = 0;
+			_parent = NULL;
+			_left = NULL;
+			_right = NULL;
+			_runlist = NULL;
+			_mrlist = NULL;
+			_safeNodeString = "";
+			_safeLeft = NULL;
+			_safeRight = NULL;
+			_safeWeight = 0;
+		}
 		MR(char nodeBit, unsigned trieNumber, string nodeString, MR* p) {
 			_nodeBit = nodeBit;
 			_nodeString = nodeString;
-			_dIndex = 0;
+			_dIndex = -1;
 			_trieNumber = trieNumber;
 			_weight = 0;
 			_parent = p;
@@ -122,6 +156,15 @@ class MR {
 		}
 		~MR() { /* printf("call a MR deconstructor.\n"); */ }
 		static void showNumberOfNodeOfMRT() { cout << _number_of_node_of_mr << endl; }
+		static void initDIndex() { _counterForDIndex = 0; }
+		static void incDIndex() { ++_counterForDIndex; }
+		static void decDIndex() { --_counterForDIndex; }
+		static long unsigned getCounterForDIndex() { return _counterForDIndex; }
+		static void setMaxDIndex(long unsigned n) {
+			if (NULL == _maxDIndex) { _maxDIndex = new vector<long unsigned>; }
+			_maxDIndex->push_back(n);
+		}
+		static long unsigned getMaxDIndex(unsigned i) { return (*_maxDIndex)[i]; }
 		char getNodeBit() { return _nodeBit; }
 		string getNodeString() { return _nodeString; }
 		long getDindex() { return _dIndex; }
@@ -157,6 +200,7 @@ class MR {
 		void setSafeLeft(MR* l) { _safeLeft = l; }
 		void setSafeRight(MR* r) { _safeRight = r; }
 		void setSafeWeight(long w) { _safeWeight = w; }
+		void setDIndex(long n) { _dIndex = n; }
 };
 
 class Dtree {
@@ -206,6 +250,14 @@ class Dtree {
 				}
 			} else { _runlist = NULL; }
 			_children = NULL;
+		}
+		Dtree(const Dtree& d) {
+			_nindexed = d._nindexed;
+			_Rule = d._Rule;
+			_nodeString = d._nodeString;
+			_runlist = d._runlist;
+			_children = d._children;
+			_offspring = d._offspring;
 		}
 		~Dtree() { /* printf("call the Dtree deconstructor.\n"); */ }
 		static void showNumberOfNodeOfDtree() { cout << _number_of_node_of_dtree << endl; }
@@ -260,7 +312,7 @@ class Dtree {
 		}
 };
 
-void showChild(Dtree *);
+void settingNIndex(Dtree*, Dtree*);
 bool isNoChild(Dtree*);
 void cutChildNode(Dtree*);
 void checkChildNode(Dtree*);
@@ -286,6 +338,8 @@ void inheritRun(Dtree *, list<Run>*);
 Dtree* makeDtreeNode(MR*, Dtree*);
 void traverseMRforDtree(MR*, Dtree*, vector<MR>*);
 void constructDtree(Dtree*, vector<MR>*);
+void addDIndex(MR*);
+void settingDIndex(vector<MR>*);
 void addMRTInfo(MR*);
 void MRTInfoTraverse(MR*);
 void settingMRInfo(vector<MR>*);
@@ -307,5 +361,6 @@ void createTheRBTRootNodes(vector<RBT>*, unsigned);
 void makeRunBasedTrie(list<Rule>*&, vector<RBT> *);
 void postTraverse(RBT*);
 void postTraverse(MR*);
+void showChild(Dtree *);
 
 #endif

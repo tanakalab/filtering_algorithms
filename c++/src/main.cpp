@@ -36,36 +36,57 @@ int main(int argc, char* argv[])
 	Dtree *dtree;
 	dtree = new Dtree("root");
 	constructDtree(dtree, mr);
+
+	/* check the results of classification via Simple Search and Decision Tree Search */
+	list< list<Result> > results;
+
+	list<Result>* resultOfSequential = new list<Result>;
+	classifyViaSequentialSearch(rulelist, packets, resultOfSequential);
+
+	list<Result>* resultOfSimpleSearch = new list<Result>;
+	{
+  	unsigned n = rulelist->size();
+		classifyViaSimpleSearch(rbt, n, packets, resultOfSimpleSearch);
+	}
+	results.push_back(*resultOfSimpleSearch);
 	
-	showChild(dtree);
+	list<Result>* resultOfRBTDtree = new list<Result>;
+	classifyViaRBTDtree(dtree, mr, packets, resultOfRBTDtree);
+	results.push_back(*resultOfRBTDtree);
+
+	assert(0 == checkClassifyResult(resultOfSequential, results));
 	/*
 	{
 		unsigned i = 1;
-		while (i < rbt->size()) {
+		while (i < mr->size()) {
 			postTraverse(&((*mr)[i]));
 			putchar('\n');
 			++i;
 		}
 	}
-	*/
 
+	showChild(dtree);
 
-	/*
 	list<string>::iterator packetIt = packets->begin();
 	list<string>::iterator packetItEnd = packets->end();
 		
 	vector<unsigned> *A = new vector<unsigned>;
-	for (unsigned i = 0; i <= rulelist->size(); ++i)
-			A->push_back(0); 
+	for (unsigned i = 0; i <= rulelist->size(); ++i) { A->push_back(0); }
 	while (packetIt != packetItEnd) {
 		for (unsigned i = 0; i <= rulelist->size(); ++i)
 			(*A)[i] = 0;
 		cout << *packetIt << ' ' << sequentialSearch(rulelist, *packetIt) << endl;
 		cout << *packetIt << ' ' << simpleSearch(rbt, A, *packetIt, rulelist->size()) << endl;
+		cout << *packetIt << ' ' << RBTDtreeSearch(dtree, mr, *packetIt) << endl;
 		putchar('\n');
 		++packetIt;
 	}
 	delete A;
+	putchar('\n');
+	string s = "01001111";
+	cout << RBTDtreeSearch(dtree, mr, s) << endl << endl;
+	s = "01010000";
+	cout << RBTDtreeSearch(dtree, mr, s) << endl;
 	*/
 
 	/* delete dynamicaly allocated memories */

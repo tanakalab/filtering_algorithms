@@ -2,18 +2,24 @@
 
 #include <rbt.hpp>
 
-void showChild(Dtree* d)
+void settingNIndex(Dtree* d, Dtree* dummy)
 {
 	if (NULL != d->getChild()) {
-		for (unsigned i = 0; i < d->getNumberOfChild(); ++i) {
-			if ((*(d->getChild()))[i]->getNodeString() != "dummy") {
-				cout << (*(d->getChild()))[i]->getNodeString();
-				cout << ' ';
-				showChild((*(d->getChild()))[i]);
+		vector<Dtree*>::iterator it = d->getChild()->begin();
+		unsigned i = 0, max = 0;
+		while (i < d->getNumberOfChild()) {
+			if ((*(d->getChild()))[i]->getNindex() > i) {
+				d->getChild()->insert(it, (*(d->getChild()))[i]->getNindex()-max, dummy);
+				it = d->getChild()->begin();
+				for (unsigned k = 0; k < i; ++k) { ++it; }
 			}
+			if ("dummy" != (*(d->getChild()))[i]->getNodeString()) {
+				max = (*(d->getChild()))[i]->getNindex()+1;
+			}
+			settingNIndex((*(d->getChild()))[i], dummy);
+			++i;
+			++it;
 		}
-	} else {
-		cout << '(' << d->getRule() << ')' << endl;
 	}
 }
 
@@ -303,7 +309,7 @@ string compSameBit(string s1, string s2)
 
 void spanMaskForPhi(Dtree *n)
 {
-	if (NULL == n->getMRS()) {
+	if (NULL != n->getMRS()) {
 		list<string> *cutInfo = NULL;
 		list<string> *MRSInfo = n->getMRS();
 		list<string>::iterator it1, it2, itEnd1, itEnd2;
@@ -312,6 +318,7 @@ void spanMaskForPhi(Dtree *n)
 		while (it1 != itEnd1) {
 			string strA = *it1;
 			it2 = it1;
+			++it2;
 			while (it2 != itEnd2) {
 				string strB = *it2;
 				string addStr = compSameBit(strA, strB);
@@ -331,24 +338,24 @@ void spanMaskForPhi(Dtree *n)
 void deleteDuplicatingElements(Dtree *n)
 {
 	if (NULL == n->getMRS()) { return ; }
-	list<string>::iterator i, j;
-	i = n->getMRS()->begin();
-	unsigned k = 0, l;
+	list<string>::iterator it1, it2;
+	it1 = n->getMRS()->begin();
+	unsigned i = 0, j;
 
-	while (k < n->getMRS()->size()) {
-		j = i;
-		++j;
-		l = k+1;
-		while (l < n->getMRS()->size()) {
-			if (*i == *j) {
-				j = n->getMRS()->erase(j);
-				--l, --j;
+	while (i < n->getMRS()->size()) {
+		it2 = it1;
+		++it2;
+		j = i+1;
+		while (j < n->getMRS()->size()) {
+			if (*it1 == *it2) {
+				it2 = n->getMRS()->erase(it2);
+				--j, --it2;
 			}
-			++l;
 			++j;
+			++it2;
 		}
-		++k;
 		++i;
+		++it1;
 	}
 }
 
@@ -431,7 +438,33 @@ void constructDtree(Dtree *d, vector<MR>* mr)
 	Dtree* p = d;
 	MR* wptr = &(*mr)[1];
 	traverseMRforDtree(wptr, p, mr);
-	Dtree::showNumberOfNodeOfDtree();
+	Dtree* dummy = new Dtree("dummy");
+	settingNIndex(d, dummy);
+}
+
+void addDIndex(MR* ptr)
+{
+	if (NULL == ptr) { return ; }
+
+	addDIndex(ptr->getLeft());
+	addDIndex(ptr->getRight());
+
+	if (0 < ptr->getWeight()) {
+		ptr->setDIndex(MR::getCounterForDIndex());
+		MR::incDIndex();
+	}
+}
+
+void settingDIndex(vector<MR>* mrt)
+{
+	unsigned w = mrt->size();
+	MR* ptr;
+	for (unsigned i = 1; i <= w; ++i) {
+		ptr = &(*mrt)[i];
+		MR::initDIndex();
+		addDIndex(ptr);
+		MR::setMaxDIndex(MR::getCounterForDIndex()-1);
+	}
 }
 
 void addMRTInfo(MR* mr)
@@ -632,6 +665,7 @@ void makeMatchRunSetTrie(vector<RBT>*& rbt, vector<MR>* mr)
 	allMRTWeightTraverse(mr);
 	changeAllMRSet(mr);
 	settingMRInfo(mr);
+	settingDIndex(mr);
 }
 
 void traverseAndMakeRBTNode(RBT *rbt, Run run)
@@ -730,13 +764,13 @@ void makeRunBasedTrie(list<Rule>*& rulelist, vector<RBT> *rbt)
 		rpIt = rpPtr->begin(), rpItEnd = rpPtr->end();
 		while (rpIt != rpItEnd) {
 			traverseAndMakeRBTNode(&(*rbt)[rpIt->getStartBit()], rpIt->getRun());
-			//cout << '(' << rpIt->getRun().getBitString() << ',' << rpIt->getStartBit() << ')' << ' ';
 			++rpIt;
 		}
-		//cout << "\n=== " << ruleIt->getRuleNumber() << " ===\n";
 		++ruleIt;
 	}
 }
+
+/* following codes are for debug */
 
 void postTraverse(RBT *rbt)
 {
@@ -764,9 +798,10 @@ void postTraverse(MR *mr)
 	postTraverse(mr->getRight());
 
 	if (mr->getWeight() > 0) {
-		cout << mr->getNodeString() << ' ' << mr->getWeight();
-	list<Run>* runlist;
+		cout << mr->getNodeString() << ' ' << mr->getDindex() << endl;
 
+	/*
+	list<Run>* runlist;
 	if (NULL != (runlist = mr->getRun())) {
 		printf(": ");
 		list<Run>::iterator it, itEnd;
@@ -789,5 +824,23 @@ void postTraverse(MR *mr)
 		cout << "]";
 	}
 	putchar('\n');
+	*/
+	}
+}
+
+void showChild(Dtree* d)
+{
+	if (NULL != d->getChild()) {
+		for (unsigned i = 0; i < d->getNumberOfChild(); ++i) {
+			if ((*(d->getChild()))[i]->getNodeString() != "dummy") {
+				if ((*(d->getChild()))[i]->getNindex() != i) { cout << "[n]"; }
+				else { cout << '[' << (*(d->getChild()))[i]->getNindex() << ']'; }
+				cout << (*(d->getChild()))[i]->getNodeString();
+				cout << ' ';
+				showChild((*(d->getChild()))[i]);
+			}
+		}
+	} else {
+		cout << '(' << d->getRule() << ')' << endl;
 	}
 }
