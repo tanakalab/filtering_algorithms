@@ -90,9 +90,14 @@ int main(int argc, char* argv[])
 	*/
 
 	/* delete dynamicaly allocated memories */
-	delete rulelist;
 	delete packets;
 	delete rbt;
+	delete mr;
+	// delete dtree;
+	//delete results;
+	delete resultOfSequential;
+	delete resultOfSimpleSearch;
+	delete resultOfRBTDtree;
 
 	return 0;
 }
