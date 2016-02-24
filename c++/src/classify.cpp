@@ -2,6 +2,30 @@
 
 #include <classify.hpp>
 
+void classifyViaRBTNDtree(Dtree*& ndtree, vector<MR>*& mrt, list<string>*& packets, list<Result> *results)
+{
+	list<string>::iterator pIt, pEnd;
+	pIt = packets->begin(), pEnd = packets->end();
+
+	struct timeval startTime, endTime;
+	double sec_timeOfDay;
+	unsigned result;
+
+	gettimeofday(&startTime, NULL);
+
+	while (pIt != pEnd) {
+		result = RBTDtreeSearch(ndtree, mrt, *pIt);
+		Result r(*pIt, result);
+		results->push_back(r);
+		++pIt;
+	}
+
+	gettimeofday(&endTime, NULL);
+	sec_timeOfDay = (endTime.tv_sec - startTime.tv_sec)
+		               + (endTime.tv_usec - startTime.tv_usec) / 1000000.0;
+	Result::setLatencyRBTNDtree(sec_timeOfDay);
+}
+
 void classifyViaRBTDtree(Dtree*& dtree, vector<MR>*& mrt, list<string>*& packets, list<Result> *results)
 {
 	list<string>::iterator pIt, pEnd;
@@ -31,7 +55,7 @@ unsigned RBTDtreeSearch(Dtree *&d, vector<MR> *&mrt, string& packet)
 	MR* mptr;
 	Dtree* dptr = d;
 	unsigned w = packet.length();
-	unsigned result;
+	unsigned result = mrt->size();
 
 	for (unsigned t = 1; t <= w; ++t) {
 		int index = -1;

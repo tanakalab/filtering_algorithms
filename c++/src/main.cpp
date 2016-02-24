@@ -32,10 +32,18 @@ int main(int argc, char* argv[])
 	vector<MR>* mr = new vector<MR>;
 	makeMatchRunSetTrie(rbt,mr);
 
+	/* make a Naive Decision Tree (not pruned Decision Tree) */
+	Dtree *naive_dtree;
+	naive_dtree = new Dtree("root");
+	constructNaiveDtree(naive_dtree, mr);
+	Dtree::showNumberOfNodeOfDtree();
+
+	Dtree::initNumberOfNodeOfDtree();
 	/* make a Decision Tree */
 	Dtree *dtree;
 	dtree = new Dtree("root");
 	constructDtree(dtree, mr);
+	Dtree::showNumberOfNodeOfDtree();
 
 	/* check the results of classification via Simple Search and Decision Tree Search */
 	list< list<Result> > results;
@@ -50,8 +58,14 @@ int main(int argc, char* argv[])
 	}
 	results.push_back(*resultOfSimpleSearch);
 	
+	list<Result>* resultOfRBTNDtree = new list<Result>;
+	classifyViaRBTNDtree(naive_dtree, mr, packets, resultOfRBTNDtree);
+	cout << Result::getLatencyRBTNDtree() << endl;
+	results.push_back(*resultOfRBTNDtree);
+
 	list<Result>* resultOfRBTDtree = new list<Result>;
 	classifyViaRBTDtree(dtree, mr, packets, resultOfRBTDtree);
+	cout << Result::getLatencyRBTDtree() << endl;
 	results.push_back(*resultOfRBTDtree);
 
 	assert(0 == checkClassifyResult(resultOfSequential, results));
@@ -93,10 +107,10 @@ int main(int argc, char* argv[])
 	delete packets;
 	delete rbt;
 	delete mr;
-	// delete dtree;
-	//delete results;
+	delete naive_dtree;
+	delete dtree;
 	delete resultOfSequential;
-	delete resultOfSimpleSearch;
+	//delete resultOfSimpleSearch;
 	delete resultOfRBTDtree;
 
 	return 0;

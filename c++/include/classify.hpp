@@ -20,6 +20,7 @@ class Result {
 		static double _latency_of_sequential;
 		static double _latency_of_simpleSearch;
 		static double _latency_of_RBTDtreeSearch;
+		static double _latency_of_RBTNDtreeSearch;
 		string _packet;
 		unsigned _retVal;
 	public:
@@ -29,15 +30,18 @@ class Result {
 		static void setLatencySequential(double t) { _latency_of_sequential = t; }
 		static void setLatencySimpleSearch(double t) { _latency_of_simpleSearch = t; }
 		static void setLatencyRBTDtree(double t) { _latency_of_RBTDtreeSearch = t; }
+		static void setLatencyRBTNDtree(double t) { _latency_of_RBTNDtreeSearch = t; }
 		static double getLatencySequential() { return _latency_of_sequential; }
 		static double getLatencySimpleSearch() { return _latency_of_simpleSearch; }
 		static double getLatencyRBTDtree() { return _latency_of_RBTDtreeSearch; }
+		static double getLatencyRBTNDtree() { return _latency_of_RBTNDtreeSearch; }
 };
 
 
 double getrusageSec();
 long getrusageMem();
 
+void classifyViaRBTNDtree(Dtree*&, vector<MR>*&, list<string>*&, list<Result> *);
 void classifyViaRBTDtree(Dtree*&, vector<MR>*&, list<string>*&, list<Result> *);
 void classifyViaSimpleSearch(vector<RBT>*&, unsigned&, list<string>*&, list<Result> *);
 void classifyViaSequentialSearch(list<Rule>*&, list<string>*&, list<Result> *);

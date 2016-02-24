@@ -389,6 +389,19 @@ void inheritRun(Dtree *d, list<Run>* runlist)
 	}
 }
 
+Dtree* makeNaiveDtreeNode(MR* w, Dtree *p)
+{
+	string tmpStr = w->getNodeString();
+	Dtree *tmpNode = new Dtree(tmpStr, w->getRun(), NULL, w->getDindex());
+	string pStr = p->getNodeString();
+
+	inheritRun(tmpNode, p->getRun());
+
+	p->setChild(tmpNode);
+
+	return tmpNode;
+}
+
 Dtree* makeDtreeNode(MR* w, Dtree *p)
 {
 	string tmpStr = w->getNodeString();
@@ -433,6 +446,24 @@ void traverseMRforDtree(MR* w, Dtree* p, vector<MR> *mr)
 	}
 }
 
+void traverseMRforNaiveDtree(MR* w, Dtree* p, vector<MR> *mr)
+{
+	if (NULL == w) { return ; }
+	traverseMRforNaiveDtree(w->getLeft(), p, mr);
+	traverseMRforNaiveDtree(w->getRight(), p, mr);
+
+	if (w->getWeight() > 0) {
+		unsigned tn = w->getTrieNumber();
+		Dtree *n = makeNaiveDtreeNode(w, p);
+		if (tn < mr->size()-1) {
+			Dtree* ptr = n;
+			MR* wptr = &(*mr)[tn+1];
+			traverseMRforNaiveDtree(wptr, ptr, mr);
+		} else { addRuleToLeaf(n); }
+		n->deleteRun();
+	}
+}
+
 void constructDtree(Dtree *d, vector<MR>* mr)
 {
 	Dtree* p = d;
@@ -440,6 +471,13 @@ void constructDtree(Dtree *d, vector<MR>* mr)
 	traverseMRforDtree(wptr, p, mr);
 	Dtree* dummy = new Dtree("dummy");
 	settingNIndex(d, dummy);
+}
+
+void constructNaiveDtree(Dtree *d, vector<MR>* mr)
+{
+	Dtree* p = d;
+	MR* wptr = &(*mr)[1];
+	traverseMRforNaiveDtree(wptr, p, mr);
 }
 
 void addDIndex(MR* ptr)

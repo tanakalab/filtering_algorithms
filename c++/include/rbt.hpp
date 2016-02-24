@@ -260,6 +260,7 @@ class Dtree {
 			_offspring = d._offspring;
 		}
 		~Dtree() { /* printf("call the Dtree deconstructor.\n"); */ }
+		static void initNumberOfNodeOfDtree() { _number_of_node_of_dtree = 0; }
 		static void showNumberOfNodeOfDtree() { cout << _number_of_node_of_dtree << endl; }
 		static void decNumberOfDtree() { --_number_of_node_of_dtree; }
 		static void minusNumberOfDtree(long n) { _number_of_node_of_dtree -= n; }
@@ -336,7 +337,9 @@ void deleteDuplicatingElements(Dtree*);
 void inheritMRS(Dtree *, list<string>*);
 void inheritRun(Dtree *, list<Run>*);
 Dtree* makeDtreeNode(MR*, Dtree*);
+void traverseMRforNaiveDtree(MR*, Dtree*, vector<MR>*);
 void traverseMRforDtree(MR*, Dtree*, vector<MR>*);
+void constructNaiveDtree(Dtree*, vector<MR>*);
 void constructDtree(Dtree*, vector<MR>*);
 void addDIndex(MR*);
 void settingDIndex(vector<MR>*);
