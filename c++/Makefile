@@ -11,10 +11,10 @@ VPATH = src include
 CPPFLAGS = -I include
 #INCLUDE = -I include
 
-CXX = g++ -O3 -Wall -Wextra -pedantic -std=c++0x -lm  # O は最適化用 
+#CXX = g++ -O3 -Wall -Wextra -pedantic -std=c++0x -lm  # O は最適化用 
 #CXX = g++-4.9 -O3 -Wall -Wextra -pedantic -std=c++0x -lm  # for mac
 
-#CXX = g++ -g3 -Wall -Wextra -pedantic -std=c++0x -lm 
+CXX = g++ -g3 -Wall -Wextra -pedantic -std=c++0x -lm 
 #CXX = g++-4.9 -g3 -Wall -Wextra -pedantic -std=c++0x -lm  # g はデバッグ用
 
 rbtrie: main.o openfile.o classify.o rbt.o check.o

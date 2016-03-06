@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
 	naive_dtree = new Dtree("root");
 	constructNaiveDtree(naive_dtree, mr);
 	Dtree::showNumberOfNodeOfDtree();
-	showChild(naive_dtree);
+	//showChild(naive_dtree);
 
 	Dtree::initNumberOfNodeOfDtree();
 	/* make a Decision Tree */
@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
 	dtree = new Dtree("root");
 	constructDtree(dtree, mr);
 	Dtree::showNumberOfNodeOfDtree();
-	showChild(dtree);
+	//showChild(dtree);
 
 	/* check the results of classification via Simple Search and Decision Tree Search */
 	list< list<Result> > results;
