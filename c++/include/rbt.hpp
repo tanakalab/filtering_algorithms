@@ -94,16 +94,16 @@ class MR {
 		string _nodeString;
 		long _dIndex;           /* an index for a Decision Tree Search */
 		unsigned _trieNumber;
-		long _weight;
+		unsigned long long _weight;
 		MR* _parent;
 		MR* _left;
 		MR* _right;
 		list<Run>* _runlist;
-		string _safeNodeString; /* for pruning the Decision Tree */
-		MR* _safeLeft;          /* for pruning the Decision Tree */
-		MR* _safeRight;         /* for pruning the Decision Tree */
-		long _safeWeight;       /* for pruning the Decision Tree */
-		list<string>* _mrlist;  /* for pruning the Decision Tree */
+		string _safeNodeString;         /* for pruning the Decision Tree */
+		MR* _safeLeft;                  /* for pruning the Decision Tree */
+		MR* _safeRight;                 /* for pruning the Decision Tree */
+		unsigned long long _safeWeight; /* for pruning the Decision Tree */
+		list<string>* _mrlist;          /* for pruning the Decision Tree */
 	public:
 		MR() { }
 		MR(char b) {
@@ -169,7 +169,7 @@ class MR {
 		string getNodeString() { return _nodeString; }
 		long getDindex() { return _dIndex; }
 		unsigned getTrieNumber() { return _trieNumber; }
-		long getWeight() { return _weight; }
+		unsigned long long getWeight() { return _weight; }
 		MR* getParent() { return _parent; }
 		MR* getLeft() { return _left; }
 		MR* getRight() { return _right; }
@@ -177,8 +177,8 @@ class MR {
 		list<string>* getMRInfo() { return _mrlist; }
 		MR* getSafeLeft() { return _safeLeft; }
 		MR* getSafeRight() { return _safeRight; }
-		long getSafeWeight() { return _safeWeight; }
-		void setWeight(long w) { _weight = w; }
+		unsigned long long getSafeWeight() { return _safeWeight; }
+		void setWeight(unsigned long long w) { _weight = w; }
 		void setLeft(MR* left) { _left = left; }
 		void setRight(MR* right) { _right = right; }
 		void setRun(Run r) {
@@ -189,7 +189,7 @@ class MR {
 			if (NULL == _mrlist) { _mrlist = new list<string>; }
 			_mrlist->push_back(s);
 		}
-		void subtractWeight(unsigned m) { _weight -= m; }
+		void subtractWeight(unsigned long long m) { _weight -= m; }
 		void deleteRun() { 
 			if (NULL != _runlist) { delete _runlist, _runlist = NULL; }
 		}
@@ -199,7 +199,7 @@ class MR {
 		void changeNodeString(string s) { _nodeString = s; }
 		void setSafeLeft(MR* l) { _safeLeft = l; }
 		void setSafeRight(MR* r) { _safeRight = r; }
-		void setSafeWeight(long w) { _safeWeight = w; }
+		void setSafeWeight(unsigned long long w) { _safeWeight = w; }
 		void setDIndex(long n) { _dIndex = n; }
 };
 

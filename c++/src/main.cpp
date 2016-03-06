@@ -60,18 +60,18 @@ int main(int argc, char* argv[])
 	}
 	results.push_back(*resultOfSimpleSearch);
 	
-	list<Result>* resultOfRBTNDtree = new list<Result>;
-	classifyViaRBTNDtree(naive_dtree, mr, packets, resultOfRBTNDtree);
-	cout << Result::getLatencyRBTNDtree() << endl;
-	results.push_back(*resultOfRBTNDtree);
+	// list<Result>* resultOfRBTNDtree = new list<Result>;
+	// classifyViaRBTNDtree(naive_dtree, mr, packets, resultOfRBTNDtree);
+	// cout << Result::getLatencyRBTNDtree() << endl;
+	// results.push_back(*resultOfRBTNDtree);
 
 	list<Result>* resultOfRBTDtree = new list<Result>;
 	classifyViaRBTDtree(dtree, mr, packets, resultOfRBTDtree);
 	cout << Result::getLatencyRBTDtree() << endl;
 	results.push_back(*resultOfRBTDtree);
 
-	/*
 	assert(0 == checkClassifyResult(resultOfSequential, results));
+	/*
 	{
 		unsigned i = 1;
 		while (i < mr->size()) {
@@ -80,7 +80,6 @@ int main(int argc, char* argv[])
 			++i;
 		}
 	}
-
 	showChild(dtree);
 
 	list<string>::iterator packetIt = packets->begin();
@@ -112,7 +111,8 @@ int main(int argc, char* argv[])
 	delete naive_dtree;
 	delete dtree;
 	delete resultOfSequential;
-	//delete resultOfSimpleSearch;
+	delete resultOfSimpleSearch;
+	//delete resultOfRBTNDtree;
 	delete resultOfRBTDtree;
 
 	return 0;
