@@ -470,6 +470,7 @@ void constructDtree(Dtree *d, vector<MR>* mr)
 	MR* wptr = &(*mr)[1];
 	traverseMRforDtree(wptr, p, mr);
 	Dtree* dummy = new Dtree("dummy");
+	Dtree::decNumberOfDtree();
 	settingNIndex(d, dummy);
 }
 

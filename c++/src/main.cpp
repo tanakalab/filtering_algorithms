@@ -33,13 +33,15 @@ int main(int argc, char* argv[])
 	makeMatchRunSetTrie(rbt,mr);
 
 	/* make a Naive Decision Tree (not pruned Decision Tree) */
+	/*
 	Dtree *naive_dtree;
 	naive_dtree = new Dtree("root");
 	constructNaiveDtree(naive_dtree, mr);
 	Dtree::showNumberOfNodeOfDtree();
-	//showChild(naive_dtree);
-
+	showChild(naive_dtree);
 	Dtree::initNumberOfNodeOfDtree();
+	*/
+
 	/* make a Decision Tree */
 	Dtree *dtree;
 	dtree = new Dtree("root");
@@ -53,12 +55,14 @@ int main(int argc, char* argv[])
 	list<Result>* resultOfSequential = new list<Result>;
 	classifyViaSequentialSearch(rulelist, packets, resultOfSequential);
 
+	/*
 	list<Result>* resultOfSimpleSearch = new list<Result>;
 	{
   	unsigned n = rulelist->size();
 		classifyViaSimpleSearch(rbt, n, packets, resultOfSimpleSearch);
 	}
 	results.push_back(*resultOfSimpleSearch);
+	*/
 	
 	// list<Result>* resultOfRBTNDtree = new list<Result>;
 	// classifyViaRBTNDtree(naive_dtree, mr, packets, resultOfRBTNDtree);
@@ -108,10 +112,10 @@ int main(int argc, char* argv[])
 	delete packets;
 	delete rbt;
 	delete mr;
-	delete naive_dtree;
+	//delete naive_dtree;
 	delete dtree;
 	delete resultOfSequential;
-	delete resultOfSimpleSearch;
+	//delete resultOfSimpleSearch;
 	//delete resultOfRBTNDtree;
 	delete resultOfRBTDtree;
 
