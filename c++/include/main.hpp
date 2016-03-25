@@ -14,6 +14,10 @@
 #include <check.hpp>
 #endif
 
+#ifndef __CLASIFICATION_MEASURE_HPP__
+#include <measure.hpp>
+#endif
+
 double Result::_latency_of_sequential = 0;
 double Result::_latency_of_simpleSearch = 0;
 double Result::_latency_of_RBTDtreeSearch = 0;

@@ -33,20 +33,27 @@ int main(int argc, char* argv[])
 	makeMatchRunSetTrie(rbt,mr);
 
 	/* make a Naive Decision Tree (not pruned Decision Tree) */
-	/*
+	struct timeval startTime, endTime;
+	double sec_timeOfDay;
+	gettimeofday(&startTime, NULL);
 	Dtree *naive_dtree;
 	naive_dtree = new Dtree("root");
 	constructNaiveDtree(naive_dtree, mr);
+	gettimeofday(&endTime, NULL);
+	sec_timeOfDay = (endTime.tv_sec - startTime.tv_sec)
+		+ (endTime.tv_usec - startTime.tv_usec) / 1000000.0;
+	cout << "time: " << sec_timeOfDay << " maxrss=" << getrusageMem() << endl;
 	Dtree::showNumberOfNodeOfDtree();
-	showChild(naive_dtree);
+	//showChild(naive_dtree);
 	Dtree::initNumberOfNodeOfDtree();
-	*/
 
 	/* make a Decision Tree */
+	/*
 	Dtree *dtree;
 	dtree = new Dtree("root");
 	constructDtree(dtree, mr);
 	Dtree::showNumberOfNodeOfDtree();
+	*/
 	//showChild(dtree);
 
 	/* check the results of classification via Simple Search and Decision Tree Search */
@@ -64,15 +71,17 @@ int main(int argc, char* argv[])
 	results.push_back(*resultOfSimpleSearch);
 	*/
 	
-	// list<Result>* resultOfRBTNDtree = new list<Result>;
-	// classifyViaRBTNDtree(naive_dtree, mr, packets, resultOfRBTNDtree);
-	// cout << Result::getLatencyRBTNDtree() << endl;
-	// results.push_back(*resultOfRBTNDtree);
+	list<Result>* resultOfRBTNDtree = new list<Result>;
+	classifyViaRBTNDtree(naive_dtree, mr, packets, resultOfRBTNDtree);
+	cout << Result::getLatencyRBTNDtree() << endl;
+	results.push_back(*resultOfRBTNDtree);
 
+	/*
 	list<Result>* resultOfRBTDtree = new list<Result>;
-	classifyViaRBTDtree(dtree, mr, packets, resultOfRBTDtree);
+	classifyViaRBTDtree(naive_dtree, mr, packets, resultOfRBTDtree);
 	cout << Result::getLatencyRBTDtree() << endl;
 	results.push_back(*resultOfRBTDtree);
+	*/
 
 	assert(0 == checkClassifyResult(resultOfSequential, results));
 	/*
@@ -112,12 +121,12 @@ int main(int argc, char* argv[])
 	delete packets;
 	delete rbt;
 	delete mr;
-	//delete naive_dtree;
-	delete dtree;
+	delete naive_dtree;
+	//delete dtree;
 	delete resultOfSequential;
 	//delete resultOfSimpleSearch;
-	//delete resultOfRBTNDtree;
-	delete resultOfRBTDtree;
+	delete resultOfRBTNDtree;
+	//delete resultOfRBTDtree;
 
 	return 0;
 }

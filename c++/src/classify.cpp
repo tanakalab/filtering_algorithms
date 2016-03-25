@@ -120,7 +120,6 @@ void classifyViaSimpleSearch(vector<RBT>*& rbt, unsigned& n, list<string>*& pack
 	sec_timeOfDay = (endTime.tv_sec - startTime.tv_sec)
 		               + (endTime.tv_usec - startTime.tv_usec) / 1000000.0;
 	Result::setLatencySimpleSearch(sec_timeOfDay);
-	;
 }
 
 unsigned simpleSearch(vector<RBT>*& rbt, vector<unsigned> *A, string& packet, unsigned n)

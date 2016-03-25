@@ -17,9 +17,9 @@ CXX = g++ -O3 -Wall -Wextra -pedantic -std=c++0x -lm  # O は最適化用
 #CXX = g++ -g3 -Wall -Wextra -pedantic -std=c++0x -lm 
 #CXX = g++-4.9 -g3 -Wall -Wextra -pedantic -std=c++0x -lm  # g はデバッグ用
 
-rbtrie: main.o openfile.o classify.o rbt.o check.o
+rbtrie: main.o openfile.o classify.o rbt.o measure.o check.o
 #rbtrie: rbtrie.o openfile.o trie.o classify.o check.o measure.o
-	g++ main.o openfile.o classify.o rbt.o check.o -o main
+	g++ main.o openfile.o classify.o rbt.o check.o measure.o -o main
 #g++ main.o openfile.o trie.o ptrie.o family.o dtree.o classify.o check.o measure.o -o rbtrie
 
 clean:
