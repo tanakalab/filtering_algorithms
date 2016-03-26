@@ -479,6 +479,7 @@ void constructNaiveDtree(Dtree *d, vector<MR>* mr)
 	Dtree* p = d;
 	MR* wptr = &(*mr)[1];
 	traverseMRforNaiveDtree(wptr, p, mr);
+
 }
 
 void addDIndex(MR* ptr)

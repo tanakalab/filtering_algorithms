@@ -18,6 +18,8 @@
 #include <measure.hpp>
 #endif
 
+double Result::_construct_time_of_naive_dtree = 0;
+double Result::_construct_time_of_dtree = 0;
 double Result::_latency_of_sequential = 0;
 double Result::_latency_of_simpleSearch = 0;
 double Result::_latency_of_RBTDtreeSearch = 0;

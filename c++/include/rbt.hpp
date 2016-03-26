@@ -261,7 +261,7 @@ class Dtree {
 		}
 		~Dtree() { /* printf("call the Dtree deconstructor.\n"); */ }
 		static void initNumberOfNodeOfDtree() { _number_of_node_of_dtree = 0; }
-		static void showNumberOfNodeOfDtree() { cout << _number_of_node_of_dtree << endl; }
+		static void showNumberOfNodeOfDtree() { cout << _number_of_node_of_dtree << endl;}
 		static void decNumberOfDtree() { --_number_of_node_of_dtree; }
 		static void minusNumberOfDtree(long n) { _number_of_node_of_dtree -= n; }
 		long getNindex() { return _nindexed; }

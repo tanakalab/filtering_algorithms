@@ -7,6 +7,7 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 
+double gettimeofday_sec();
 double getrusageSec();
 long getrusageMem();
 

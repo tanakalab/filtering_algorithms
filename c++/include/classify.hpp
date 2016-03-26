@@ -21,6 +21,8 @@ class Result {
 		static double _latency_of_simpleSearch;
 		static double _latency_of_RBTDtreeSearch;
 		static double _latency_of_RBTNDtreeSearch;
+		static double _construct_time_of_naive_dtree;
+		static double _construct_time_of_dtree;
 		string _packet;
 		unsigned _retVal;
 	public:
@@ -31,15 +33,16 @@ class Result {
 		static void setLatencySimpleSearch(double t) { _latency_of_simpleSearch = t; }
 		static void setLatencyRBTDtree(double t) { _latency_of_RBTDtreeSearch = t; }
 		static void setLatencyRBTNDtree(double t) { _latency_of_RBTNDtreeSearch = t; }
+		static void setConstructTimeOfRBTDtree(double t) { _construct_time_of_dtree = t; }
+		static void setConstructTimeOfRBTNDtree(double t) { _construct_time_of_naive_dtree = t; }
 		static double getLatencySequential() { return _latency_of_sequential; }
 		static double getLatencySimpleSearch() { return _latency_of_simpleSearch; }
 		static double getLatencyRBTDtree() { return _latency_of_RBTDtreeSearch; }
 		static double getLatencyRBTNDtree() { return _latency_of_RBTNDtreeSearch; }
+		static double getConstructTimeOfRBTDtree() { return _construct_time_of_dtree; }
+		static double getConstructTimeOfRBTNDtree() { return _construct_time_of_naive_dtree; }
 };
 
-
-double getrusageSec();
-long getrusageMem();
 
 void classifyViaRBTNDtree(Dtree*&, vector<MR>*&, list<string>*&, list<Result> *);
 void classifyViaRBTDtree(Dtree*&, vector<MR>*&, list<string>*&, list<Result> *);

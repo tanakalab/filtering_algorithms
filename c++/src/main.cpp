@@ -24,44 +24,16 @@ int main(int argc, char* argv[])
 		cout << error_message; return 1;
 	}
 
+	/* do the sequential search */
+	list< list<Result> > results;
+	list<Result>* resultOfSequential = new list<Result>;
+	classifyViaSequentialSearch(rulelist, packets, resultOfSequential);
+
 	/* make a Run-Based Trie */
 	vector<RBT>* rbt = new vector<RBT>;
 	makeRunBasedTrie(rulelist,rbt);
 
-	/* make a Match Run Set Trie */
-	vector<MR>* mr = new vector<MR>;
-	makeMatchRunSetTrie(rbt,mr);
-
-	/* make a Naive Decision Tree (not pruned Decision Tree) */
-	struct timeval startTime, endTime;
-	double sec_timeOfDay;
-	gettimeofday(&startTime, NULL);
-	Dtree *naive_dtree;
-	naive_dtree = new Dtree("root");
-	constructNaiveDtree(naive_dtree, mr);
-	gettimeofday(&endTime, NULL);
-	sec_timeOfDay = (endTime.tv_sec - startTime.tv_sec)
-		+ (endTime.tv_usec - startTime.tv_usec) / 1000000.0;
-	cout << "time: " << sec_timeOfDay << " maxrss=" << getrusageMem() << endl;
-	Dtree::showNumberOfNodeOfDtree();
-	//showChild(naive_dtree);
-	Dtree::initNumberOfNodeOfDtree();
-
-	/* make a Decision Tree */
-	/*
-	Dtree *dtree;
-	dtree = new Dtree("root");
-	constructDtree(dtree, mr);
-	Dtree::showNumberOfNodeOfDtree();
-	*/
-	//showChild(dtree);
-
-	/* check the results of classification via Simple Search and Decision Tree Search */
-	list< list<Result> > results;
-
-	list<Result>* resultOfSequential = new list<Result>;
-	classifyViaSequentialSearch(rulelist, packets, resultOfSequential);
-
+	/* do the simple search */
 	/*
 	list<Result>* resultOfSimpleSearch = new list<Result>;
 	{
@@ -70,31 +42,50 @@ int main(int argc, char* argv[])
 	}
 	results.push_back(*resultOfSimpleSearch);
 	*/
-	
+
+	/* make a Match Run Set Trie */
+	vector<MR>* mr = new vector<MR>;
+	makeMatchRunSetTrie(rbt,mr);
+
+	/* make a Naive Decision Tree (not pruned Decision Tree) */
+	double start, end;
+	Dtree *naive_dtree;
+	naive_dtree = new Dtree("root");
+	start = gettimeofday_sec();
+	constructNaiveDtree(naive_dtree, mr);
+	end = gettimeofday_sec();
+	Result::setConstructTimeOfRBTNDtree(end-start);
+	cout << "number of Naive Dtree Node: "; Dtree::showNumberOfNodeOfDtree(); 
+	cout << "construct time of Naive Dtree Node: " << Result::getConstructTimeOfRBTNDtree() << endl; 
+	//showChild(naive_dtree);
+	Dtree::initNumberOfNodeOfDtree();
+
+	/* classify packets via Naive Decision Tree */
 	list<Result>* resultOfRBTNDtree = new list<Result>;
 	classifyViaRBTNDtree(naive_dtree, mr, packets, resultOfRBTNDtree);
-	cout << Result::getLatencyRBTNDtree() << endl;
+	//cout << Result::getLatencyRBTNDtree() << endl;
 	results.push_back(*resultOfRBTNDtree);
 
-	/*
+	/* make a Decision Tree */
+	Dtree *dtree;
+	dtree = new Dtree("root");
+	start = gettimeofday_sec();
+	constructDtree(dtree, mr);
+	end = gettimeofday_sec();
+	Result::setConstructTimeOfRBTDtree(end-start);
+	cout << "number of Dtree Node: "; Dtree::showNumberOfNodeOfDtree(); 
+	cout << "construct time of Dtree Node: " << Result::getConstructTimeOfRBTDtree() << endl; 
+	//showChild(dtree);
+
+	/* classify packets via Naive Decision Tree */
 	list<Result>* resultOfRBTDtree = new list<Result>;
 	classifyViaRBTDtree(naive_dtree, mr, packets, resultOfRBTDtree);
-	cout << Result::getLatencyRBTDtree() << endl;
+	//cout << Result::getLatencyRBTDtree() << endl;
 	results.push_back(*resultOfRBTDtree);
-	*/
 
 	assert(0 == checkClassifyResult(resultOfSequential, results));
-	/*
-	{
-		unsigned i = 1;
-		while (i < mr->size()) {
-			postTraverse(&((*mr)[i]));
-			putchar('\n');
-			++i;
-		}
-	}
-	showChild(dtree);
 
+	/*
 	list<string>::iterator packetIt = packets->begin();
 	list<string>::iterator packetItEnd = packets->end();
 		
@@ -122,11 +113,11 @@ int main(int argc, char* argv[])
 	delete rbt;
 	delete mr;
 	delete naive_dtree;
-	//delete dtree;
+	delete dtree;
 	delete resultOfSequential;
 	//delete resultOfSimpleSearch;
 	delete resultOfRBTNDtree;
-	//delete resultOfRBTDtree;
+	delete resultOfRBTDtree;
 
 	return 0;
 }

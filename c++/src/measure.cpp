@@ -2,6 +2,13 @@
 
 #include <measure.hpp>
 
+double gettimeofday_sec()
+{
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	return tv.tv_sec + tv.tv_usec * 1e-6;
+}
+
 double getrusageSec()
 {
 	struct rusage t;
@@ -17,14 +24,3 @@ long getrusageMem()
 	getrusage(RUSAGE_SELF, &r);
 	return r.ru_maxrss;
 }
-
-/*
-
-char command[MAX_STRING];
-sprintf(command, "grep VmHWM /proc/%d/status", getpid());
-system(command);
-
-other method to measure memory, reference to
-http://goyoki.hatenablog.com/entry/2013/05/11/031202
-
-*/
