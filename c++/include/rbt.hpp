@@ -94,7 +94,10 @@ class MR {
 		string _nodeString;
 		long _dIndex;           /* an index for a Decision Tree Search */
 		unsigned _trieNumber;
+		//////////////////////////////////////////////////////////////////////
 		unsigned long long _weight;
+		bool _needNode;
+		//////////////////////////////////////////////////////////////////////
 		MR* _parent;
 		MR* _left;
 		MR* _right;
@@ -102,7 +105,10 @@ class MR {
 		string _safeNodeString;         /* for pruning the Decision Tree */
 		MR* _safeLeft;                  /* for pruning the Decision Tree */
 		MR* _safeRight;                 /* for pruning the Decision Tree */
+		//////////////////////////////////////////////////////////////////////
 		unsigned long long _safeWeight; /* for pruning the Decision Tree */
+		bool _safeNeedNode;
+		//////////////////////////////////////////////////////////////////////
 		list<string>* _mrlist;          /* for pruning the Decision Tree */
 	public:
 		MR() { }
@@ -111,7 +117,10 @@ class MR {
 			_nodeString = "";
 			_dIndex = -1;
 			_trieNumber = 0;
+			//////////////////////////////////////////////////////////////////////
 			_weight = 0;
+			_needNode = false;
+			//////////////////////////////////////////////////////////////////////
 			_parent = NULL;
 			_left = NULL;
 			_right = NULL;
@@ -120,13 +129,20 @@ class MR {
 			_safeNodeString = "";
 			_safeLeft = NULL;
 			_safeRight = NULL;
+			//////////////////////////////////////////////////////////////////////
 			_safeWeight = 0;
+			_safeNeedNode = false;
+			//////////////////////////////////////////////////////////////////////
 		}
 		MR(char b, int tn) {
 			_nodeBit = b;
 			_nodeString = "";
 			_dIndex = -1;
 			_trieNumber = tn;
+			//////////////////////////////////////////////////////////////////////
+			_weight = 0;
+			_needNode = false;
+			//////////////////////////////////////////////////////////////////////
 			_weight = 0;
 			_parent = NULL;
 			_left = NULL;
@@ -136,13 +152,20 @@ class MR {
 			_safeNodeString = "";
 			_safeLeft = NULL;
 			_safeRight = NULL;
+			//////////////////////////////////////////////////////////////////////
 			_safeWeight = 0;
+			_safeNeedNode = false;
+			//////////////////////////////////////////////////////////////////////
 		}
 		MR(char nodeBit, unsigned trieNumber, string nodeString, MR* p) {
 			_nodeBit = nodeBit;
 			_nodeString = nodeString;
 			_dIndex = -1;
 			_trieNumber = trieNumber;
+			//////////////////////////////////////////////////////////////////////
+			_weight = 0;
+			_needNode = false;
+			//////////////////////////////////////////////////////////////////////
 			_weight = 0;
 			_parent = p;
 			_left = NULL;
@@ -152,7 +175,10 @@ class MR {
 			_safeNodeString = "";
 			_safeLeft = NULL;
 			_safeRight = NULL;
+			//////////////////////////////////////////////////////////////////////
 			_safeWeight = 0;
+			_safeNeedNode = false;
+			//////////////////////////////////////////////////////////////////////
 		}
 		~MR() { /* printf("call a MR deconstructor.\n"); */ }
 		static void showNumberOfNodeOfMRT() { cout << _number_of_node_of_mr << endl; }
