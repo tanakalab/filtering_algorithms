@@ -106,10 +106,13 @@ void revertMRS(MR* wptr, Dtree* p)
 	list<string>::iterator it, end;
 	it = mrlist->begin(), end = mrlist->end();
 	MR* w = wptr;
-	if (w->getSafeWeight() > 0) {
-		w->setWeight(w->getSafeWeight());
-		w->setSafeWeight(0);
+	//if (w->getSafeWeight() > 0) {
+	if (w->getSafeNeedNode()) {
+		w->setNeedNode(true); w->setSafeNeedNode(false);
 	}
+		//w->setWeight(w->getSafeWeight());
+		//w->setSafeWeight(0);
+	
 	while (it != end) {
 		traverseMRTforRevert(wptr, *it);
 		++it;
@@ -155,7 +158,8 @@ void revert(MR* wptr, Dtree* p)
 MR* setPivotNode(MR* wptr)
 {
 	MR* w = wptr;
-	while (0 == w->getWeight()) {
+	//while (0 == w->getWeight()) {
+	while (!w->isNeeded()) {
 		if (NULL != w->getParent()) { w = w->getParent(); }
 		else { break; }
 	}
@@ -255,14 +259,22 @@ void modifyMRT(MR* wptr, Dtree* p)
 		else if ("0" == bitStr) {
 			string pStr = p->getNodeString();
 			if (NULL != wptr->getRight() && 1 == pStr.length()) 
-				if (wptr->getRight()->getWeight() > 0) 
-					modifySafeWeight(wptr); 
+				//if (wptr->getRight()->getWeight() > 0) 
+				if (wptr->getRight()->isNeeded()) {
+					wptr->setNeedNode(false);
+					wptr->setSafeNeedNode(true);
+					//modifySafeWeight(wptr); 
+				}
 		}
 		else if ("1" == bitStr) {
 			string pStr = p->getNodeString();
 			if (NULL != wptr->getLeft() && 1 == pStr.length())
-				if (wptr->getLeft()->getWeight() > 0)
-				 modifySafeWeight(wptr);	
+				//if (wptr->getLeft()->getWeight() > 0)
+				if (wptr->getLeft()->isNeeded()) {
+					wptr->setNeedNode(false);
+					wptr->setSafeNeedNode(true);
+				 //modifySafeWeight(wptr);	
+				}
 		}
 		++it;
 	}
@@ -428,7 +440,7 @@ void traverseMRforDtree(MR* w, Dtree* p, vector<MR> *mr)
 	traverseMRforDtree(w->getLeft(), p, mr);
 	traverseMRforDtree(w->getRight(), p, mr);
 
-	if (w->getWeight() > 0) {
+	if (w->isNeeded()) {
 		unsigned tn = w->getTrieNumber();
 		Dtree *n = makeDtreeNode(w, p);
 
@@ -452,7 +464,7 @@ void traverseMRforNaiveDtree(MR* w, Dtree* p, vector<MR> *mr)
 	traverseMRforNaiveDtree(w->getLeft(), p, mr);
 	traverseMRforNaiveDtree(w->getRight(), p, mr);
 
-	if (w->getWeight() > 0) {
+	if (w->isNeeded()) {
 		unsigned tn = w->getTrieNumber();
 		Dtree *n = makeNaiveDtreeNode(w, p);
 		if (tn < mr->size()-1) {
@@ -489,7 +501,7 @@ void addDIndex(MR* ptr)
 	addDIndex(ptr->getLeft());
 	addDIndex(ptr->getRight());
 
-	if (0 < ptr->getWeight()) {
+	if (ptr->isNeeded()) {
 		ptr->setDIndex(MR::getCounterForDIndex());
 		MR::incDIndex();
 	}
@@ -513,7 +525,8 @@ void addMRTInfo(MR* mr)
 
 	ptr = ptr->getParent();
 	while (NULL != ptr) {
-		if (0 < ptr->getWeight()) {
+		//if (0 < ptr->getWeight()) {
+		if (ptr->isNeeded()) {
 			ptr->setMRInfo(base->getNodeString());
 		}
 		ptr = ptr->getParent();
@@ -527,7 +540,8 @@ void MRTInfoTraverse(MR* mr)
 	MRTInfoTraverse(mr->getLeft());
 	MRTInfoTraverse(mr->getRight());
 
-	if (mr->getWeight() > 0) { addMRTInfo(mr); }
+	//if (mr->getWeight() > 0) { addMRTInfo(mr); }
+	if (mr->isNeeded()) { addMRTInfo(mr); }
 }
 
 void settingMRInfo(vector<MR>* mrt)
@@ -556,28 +570,28 @@ void updateMRT(MR* mrp, MR* mrc, char c)
 {
 	unsigned i = mrp->getTrieNumber();
 	if (NULL == mrc) { 
-		if ("p" == mrp->getNodeString())
+		if ("p" == mrp->getNodeString()) 
 			if ('0' == c) { mrp->setLeft(new MR(c, i, "0", mrp)); }
 			else { mrp->setRight(new MR(c, i, "1", mrp)); }
 		else
 			if ('0' == c) { mrp->setLeft(new MR(c, i, mrp->getNodeString()+"0", mrp)); }
 			else { mrp->setRight(new MR(c, i, mrp->getNodeString()+"1", mrp)); }
 	}
-	mrp->setWeight(0);
 	if ('0' == c) { 
-		mrp->getLeft()->setWeight(999);
-		moveRun(mrp, mrp->getLeft()), mrp->deleteRun(); 
+		moveRun(mrp, mrp->getLeft()), mrp->deleteRun();
+		mrp->getLeft()->setNeedNode(true);
 	}
 	else { 
-		mrp->getRight()->setWeight(999);
 		moveRun(mrp, mrp->getRight()), mrp->deleteRun(); 
+		mrp->getRight()->setNeedNode(true);
 	}
+	mrp->setNeedNode(false);
 }
 
 bool noMRS(MR* mr)
 {
 	if (NULL == mr) { return true; }
-	if (0 == mr->getWeight()) { return true; }
+	if (!mr->isNeeded()) { return true; }
 
 	return false;
 }
@@ -586,13 +600,11 @@ void changeMRSet(MR* mr)
 {
 	if (NULL == mr) { return ; }
 
-	if (mr->getWeight() > 0) {
-		if (noMRS(mr->getLeft()) && !noMRS(mr->getRight())) { /* exist _left and no _right */
+	if (mr->isNeeded()) {
+		if (noMRS(mr->getLeft()) && !noMRS(mr->getRight())) /* _ r */
 			updateMRT(mr, mr->getLeft(), '0');
-		}
-		if (!noMRS(mr->getLeft()) && noMRS(mr->getRight())) { /* no _left and exist _right */
+		if (!noMRS(mr->getLeft()) && noMRS(mr->getRight())) /* l _ */
 			updateMRT(mr, mr->getRight(), '1');
-		}
 	}
 
 	changeMRSet(mr->getLeft());
@@ -619,23 +631,48 @@ void addRun(MR* wptr, MR* base)
 	}
 }
 
+bool isMRS(MR* mr)
+{
+	if (NULL == mr) { return false; }
+	return mr->getDeleteSign();
+}
+
+void checkIsNeeded(MR* mr)
+{
+	if (isMRS(mr->getLeft()) && isMRS(mr->getRight())) {
+		mr->setDeleteSign(true);
+		mr->setNeedNode(false);	
+		mr->deleteRun(); 
+	}
+}
+
 void walkToRoot(MR* ptr)
 {
-	MR *wptr = ptr, *base = ptr;
-	unsigned baseWeight = base->getWeight();
+	MR *wptr = ptr;
 
 	wptr = wptr->getParent();
 	while (NULL != wptr) {
 		if (NULL != wptr->getRun() || 'p' == wptr->getNodeBit()) {
-			wptr->subtractWeight(baseWeight);
-			if ('p' != wptr->getNodeBit()) { addRun(wptr, base); }
-			//wptr->setMRInfo(base->getNodeString());
-			if (0 == wptr->getWeight()) { wptr->deleteRun(); }
+			if ('p' != wptr->getNodeBit()) { addRun(wptr, ptr); }
 		}
 		wptr = wptr->getParent();
 	}
 }
 
+void MRTTraverseToDeleteUnnucessaryElements(MR* mr)
+{
+	if (NULL == mr) { return; }
+
+	MRTTraverseToDeleteUnnucessaryElements(mr->getLeft());
+	MRTTraverseToDeleteUnnucessaryElements(mr->getRight());
+
+	if (mr->isNeeded()) { 
+		walkToRoot(mr);
+		checkIsNeeded(mr); 
+	}
+}
+
+/*
 void MRTWeightTraverse(MR* mr)
 {
 	if (NULL == mr) { return; }
@@ -645,22 +682,26 @@ void MRTWeightTraverse(MR* mr)
 
 	if (mr->getWeight() > 0) { walkToRoot(mr); }
 }
+*/
 
-void allMRTWeightTraverse(vector<MR>* mrt)
+void allMRTTraverseToDeleteUnnecessaryElements(vector<MR>* mrt)
 {
 	vector<MR>::iterator it = mrt->begin();
 	vector<MR>::iterator end = mrt->end();
 	while (it != end) {
-		MRTWeightTraverse(&(*it));
+		MRTTraverseToDeleteUnnucessaryElements(&(*it));
 		++it;
 	}
 }
 
-void traverseAndMakeMRTNode(RBT* rbt, MR* mr, unsigned& w, unsigned& i)
+void traverseAndMakeMRTNode(RBT* rbt, MR* mr, unsigned& i)
 {
-	if (NULL == rbt) { return ; }
+	if (NULL == rbt) { return ;}
 
-	if ("p" == mr->getNodeString()) { mr->setWeight(pow(2, w+1-i)); }
+	if ("p" == mr->getNodeString()) { 
+		mr->setNeedNode(true); 
+		mr->setDeleteSign(true);
+	}
 	if (NULL != rbt->getRun()) {
 		list<Run>::iterator it = rbt->getRun()->begin();
 		list<Run>::iterator itEnd = rbt->getRun()->end();
@@ -668,23 +709,25 @@ void traverseAndMakeMRTNode(RBT* rbt, MR* mr, unsigned& w, unsigned& i)
 			mr->setRun(*it);
 			++it;
 		}
-		mr->setWeight(pow(2,w+1-i-mr->getNodeString().length()));
+		mr->setNeedNode(true);
+		mr->setDeleteSign(true);
 	}
 
-  if (NULL != rbt->getLeft()) 
+	if (NULL != rbt->getLeft())
 		mr->setLeft(new MR('0', i, rbt->getLeft()->getNodeString(), mr)); 
   if (NULL != rbt->getRight())
 		mr->setRight(new MR('1', i, rbt->getRight()->getNodeString(), mr)); 
 
-	traverseAndMakeMRTNode(rbt->getLeft(), mr->getLeft(), w, i);
-	traverseAndMakeMRTNode(rbt->getRight(), mr->getRight(), w, i);
+	traverseAndMakeMRTNode(rbt->getLeft(), mr->getLeft(), i);
+	traverseAndMakeMRTNode(rbt->getRight(), mr->getRight(), i);
 }
 
 void copyRBTtoMRT(vector<RBT>*& rbt, vector<MR>* mr)
 {
 	unsigned w = rbt->size()-1;
 	for (unsigned i = 1; i < w+1; ++i) {
-		traverseAndMakeMRTNode(&(*rbt)[i], &(*mr)[i], w, i);
+		//traverseAndMakeMRTNode(&(*rbt)[i], &(*mr)[i], w, i);
+		traverseAndMakeMRTNode(&(*rbt)[i], &(*mr)[i], i);
 	}
 }
 
@@ -702,7 +745,7 @@ void makeMatchRunSetTrie(vector<RBT>*& rbt, vector<MR>* mr)
 {
 	createTheMRTRootNodes(mr, rbt->size());
 	copyRBTtoMRT(rbt,mr);
-	allMRTWeightTraverse(mr);
+	allMRTTraverseToDeleteUnnecessaryElements(mr);
 	changeAllMRSet(mr);
 	settingMRInfo(mr);
 	settingDIndex(mr);
@@ -837,10 +880,12 @@ void postTraverse(MR *mr)
 	postTraverse(mr->getLeft());
 	postTraverse(mr->getRight());
 
-	if (mr->getWeight() > 0) {
-		cout << mr->getNodeString() << ' ' << mr->getDindex() << endl;
+	//if (mr->getWeight() > 0) {
+	//if (NULL != mr->getRun()) {
+	if (mr->isNeeded()) {
+		cout << mr->getNodeString() << ' ' << mr->getDindex();
+		//cout << mr->getNodeString() << ' ' << mr->getDindex() << endl;
 
-	/*
 	list<Run>* runlist;
 	if (NULL != (runlist = mr->getRun())) {
 		printf(": ");
@@ -864,7 +909,6 @@ void postTraverse(MR *mr)
 		cout << "]";
 	}
 	putchar('\n');
-	*/
 	}
 }
 

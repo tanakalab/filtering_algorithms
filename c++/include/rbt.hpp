@@ -97,6 +97,7 @@ class MR {
 		//////////////////////////////////////////////////////////////////////
 		unsigned long long _weight;
 		bool _needNode;
+		bool _forDeleteSign;
 		//////////////////////////////////////////////////////////////////////
 		MR* _parent;
 		MR* _left;
@@ -120,6 +121,7 @@ class MR {
 			//////////////////////////////////////////////////////////////////////
 			_weight = 0;
 			_needNode = false;
+			_forDeleteSign = false;
 			//////////////////////////////////////////////////////////////////////
 			_parent = NULL;
 			_left = NULL;
@@ -142,6 +144,7 @@ class MR {
 			//////////////////////////////////////////////////////////////////////
 			_weight = 0;
 			_needNode = false;
+			_forDeleteSign = false;
 			//////////////////////////////////////////////////////////////////////
 			_weight = 0;
 			_parent = NULL;
@@ -165,6 +168,7 @@ class MR {
 			//////////////////////////////////////////////////////////////////////
 			_weight = 0;
 			_needNode = false;
+			_forDeleteSign = false;
 			//////////////////////////////////////////////////////////////////////
 			_weight = 0;
 			_parent = p;
@@ -175,7 +179,6 @@ class MR {
 			_safeNodeString = "";
 			_safeLeft = NULL;
 			_safeRight = NULL;
-			//////////////////////////////////////////////////////////////////////
 			_safeWeight = 0;
 			_safeNeedNode = false;
 			//////////////////////////////////////////////////////////////////////
@@ -195,7 +198,11 @@ class MR {
 		string getNodeString() { return _nodeString; }
 		long getDindex() { return _dIndex; }
 		unsigned getTrieNumber() { return _trieNumber; }
+		//////////////////////////////////////////////////////////////////////
 		unsigned long long getWeight() { return _weight; }
+		bool isNeeded() { return _needNode; }
+		bool getDeleteSign() { return _forDeleteSign; }
+		//////////////////////////////////////////////////////////////////////
 		MR* getParent() { return _parent; }
 		MR* getLeft() { return _left; }
 		MR* getRight() { return _right; }
@@ -204,7 +211,12 @@ class MR {
 		MR* getSafeLeft() { return _safeLeft; }
 		MR* getSafeRight() { return _safeRight; }
 		unsigned long long getSafeWeight() { return _safeWeight; }
+		bool getSafeNeedNode() { return _safeNeedNode; }
+		//////////////////////////////////////////////////////////////////////
 		void setWeight(unsigned long long w) { _weight = w; }
+		void setNeedNode(bool b) { _needNode = b; }
+		void setDeleteSign(bool b) { _forDeleteSign = b; }
+		//////////////////////////////////////////////////////////////////////
 		void setLeft(MR* left) { _left = left; }
 		void setRight(MR* right) { _right = right; }
 		void setRun(Run r) {
@@ -226,6 +238,7 @@ class MR {
 		void setSafeLeft(MR* l) { _safeLeft = l; }
 		void setSafeRight(MR* r) { _safeRight = r; }
 		void setSafeWeight(unsigned long long w) { _safeWeight = w; }
+		void setSafeNeedNode(bool b) { _safeNeedNode = b; }
 		void setDIndex(long n) { _dIndex = n; }
 };
 
@@ -380,7 +393,8 @@ void changeAllMRSet(vector<MR>*);
 void walkToRoot(MR*);
 void MRTWeightTraverse(MR*);
 void allMRTWeightTraverse(vector<MR>*);
-void traverseAndMakeMRTNode(RBT *, MR *, unsigned&, unsigned&);
+//void traverseAndMakeMRTNode(RBT *, MR *, unsigned&, unsigned&);
+void traverseAndMakeMRTNode(RBT*, MR*, unsigned&);
 void copyRBTtoMRT(vector<RBT>*&, vector<MR>*);
 void createTheMRTRootNodes(vector<MR>*, unsigned);
 void makeMatchRunSetTrie(vector<RBT>*&, vector<MR>*);
