@@ -78,14 +78,15 @@ int main(int argc, char* argv[])
 	constructDtree(dtree, mr);
 	end = gettimeofday_sec();
 	Result::setConstructTimeOfRBTDtree(end-start);
-	cout << "number of Dtree Node: "; Dtree::showNumberOfNodeOfDtree(); 
-	cout << "construct time of Dtree Node: " << Result::getConstructTimeOfRBTDtree() << endl; 
+	cout << "number of rule: " << rulelist->size() << endl;
+	cout << "number of Decision Tree Node: "; Dtree::showNumberOfNodeOfDtree(); 
+	cout << "construct time of Decision Tree: " << Result::getConstructTimeOfRBTDtree() << endl; 
 	//showChild(dtree);
 
 	/* classify packets via Decision Tree */
 	list<Result>* resultOfRBTDtree = new list<Result>;
 	classifyViaRBTDtree(dtree, mr, packets, resultOfRBTDtree);
-	cout << Result::getLatencyRBTDtree() << endl;
+	cout << "Decision Tree Search Time: "<< Result::getLatencyRBTDtree() << endl;
 	results.push_back(*resultOfRBTDtree);
 
 	assert(0 == checkClassifyResult(resultOfSequential, results));
