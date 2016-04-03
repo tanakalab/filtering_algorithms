@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
 	/* classify packets via Decision Tree */
 	list<Result>* resultOfRBTDtree = new list<Result>;
 	classifyViaRBTDtree(dtree, mr, packets, resultOfRBTDtree);
-	//cout << Result::getLatencyRBTDtree() << endl;
+	cout << Result::getLatencyRBTDtree() << endl;
 	results.push_back(*resultOfRBTDtree);
 
 	assert(0 == checkClassifyResult(resultOfSequential, results));
