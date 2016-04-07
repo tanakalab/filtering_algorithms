@@ -1,0 +1,18 @@
+# w = 64
+#
+# number of Run in a Rule at most 20
+# (but most rule has two run)
+#
+# number of Run in RuleList and construct time (s)
+100 1.90523
+110 1.67621
+120 4.42883
+130 11.48450
+140 14.50800
+150 12.35110
+160 32.14150
+170 36.63170
+180 59.79540
+190 102.35900
+200 194.13600
+210 448.50900 

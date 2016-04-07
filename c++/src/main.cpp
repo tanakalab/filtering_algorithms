@@ -81,6 +81,7 @@ int main(int argc, char* argv[])
 	cout << "number of rule: " << rulelist->size() << endl;
 	cout << "number of Decision Tree Node: "; Dtree::showNumberOfNodeOfDtree(); 
 	cout << "construct time of Decision Tree: " << Result::getConstructTimeOfRBTDtree() << endl; 
+	cout << "memory for construct Decision Tree: " << getrusageMem() << endl; 
 	//showChild(dtree);
 
 	/* classify packets via Decision Tree */

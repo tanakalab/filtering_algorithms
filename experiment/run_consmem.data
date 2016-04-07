@@ -1,0 +1,18 @@
+# bit length of rule is 64
+#
+# number of Run in Rule at most 20
+# (but most rule has two run)
+#
+# number of Run in RuleList and memory(kB) to construct
+100 182038
+110 158202
+120 385397
+130 946855
+140 1120660
+150 946522
+160 2382610
+170 2804790
+180 4258910
+190 6947090
+200 9450490
+210 13746900
