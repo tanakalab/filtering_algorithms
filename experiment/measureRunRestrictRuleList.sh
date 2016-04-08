@@ -1,10 +1,10 @@
 #! /bin/bash -
 
-i=220
-while [ $i != 230 ]
+i=250
+while [ $i != 260 ]
 #while [ $i != 250 ]
 do
-	j=3
+	j=7
 	#while [ $j != 4 ]
 	while [ $j != 11 ]
 	do
