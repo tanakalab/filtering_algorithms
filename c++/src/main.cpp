@@ -25,21 +25,21 @@ int main(int argc, char* argv[])
 	}
 
 	/* do the sequential search */
-	list< list<Result> > results;
-	list<Result>* resultOfSequential = new list<Result>;
-	classifyViaSequentialSearch(rulelist, packets, resultOfSequential);
+	//list< list<Result> > results;
+	//list<Result>* resultOfSequential = new list<Result>;
+	//classifyViaSequentialSearch(rulelist, packets, resultOfSequential);
 
 	/* make a Run-Based Trie */
 	vector<RBT>* rbt = new vector<RBT>;
 	makeRunBasedTrie(rulelist,rbt);
 
 	/* do the simple search */
-	list<Result>* resultOfSimpleSearch = new list<Result>;
-	{
-  	unsigned n = rulelist->size();
-		classifyViaSimpleSearch(rbt, n, packets, resultOfSimpleSearch);
-	}
-	results.push_back(*resultOfSimpleSearch);
+	//list<Result>* resultOfSimpleSearch = new list<Result>;
+	//{
+  	//unsigned n = rulelist->size();
+		//classifyViaSimpleSearch(rbt, n, packets, resultOfSimpleSearch);
+	//}
+	//results.push_back(*resultOfSimpleSearch);
 
 	/* make a Match Run Set Trie */
 	vector<MR>* mr = new vector<MR>;
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
 	constructDtree(dtree, mr);
 	end = gettimeofday_sec();
 	Result::setConstructTimeOfRBTDtree(end-start);
-	cout << "number of rule: " << rulelist->size() << endl;
+	//cout << "number of rule: " << rulelist->size() << endl;
 	cout << "number of Decision Tree Node: "; Dtree::showNumberOfNodeOfDtree(); 
 	cout << "construct time of Decision Tree: " << Result::getConstructTimeOfRBTDtree() << endl; 
 	cout << "memory for construct Decision Tree: " << getrusageMem() << endl; 
@@ -88,9 +88,9 @@ int main(int argc, char* argv[])
 	list<Result>* resultOfRBTDtree = new list<Result>;
 	classifyViaRBTDtree(dtree, mr, packets, resultOfRBTDtree);
 	cout << "Decision Tree Search Time: "<< Result::getLatencyRBTDtree() << endl;
-	results.push_back(*resultOfRBTDtree);
+	//results.push_back(*resultOfRBTDtree);
 
-	assert(0 == checkClassifyResult(resultOfSequential, results));
+	//assert(0 == checkClassifyResult(resultOfSequential, results));
 
 	/* delete dynamicaly allocated memories */
 	delete packets;
@@ -98,8 +98,8 @@ int main(int argc, char* argv[])
 	delete mr;
 	//delete naive_dtree;
 	delete dtree;
-	delete resultOfSequential;
-	delete resultOfSimpleSearch;
+	//delete resultOfSequential;
+	//delete resultOfSimpleSearch;
 	//delete resultOfRBTNDtree;
 	delete resultOfRBTDtree;
 
