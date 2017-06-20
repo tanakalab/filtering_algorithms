@@ -1,7 +1,7 @@
 # Packet classification algorithms
  * Run-Based Trie (Simple Search, Decision Tree Search) 
- * Hierachical Interigent Cuttings 
- * Grouper
+ * Hierachical Interigent Cuttings (unimplemented)
+ * Grouper (unimplemented)
 
 ## usage
 $ git clone git@github.com:tanakalab/filtering_algorithm.git  
